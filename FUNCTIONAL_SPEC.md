@@ -113,7 +113,7 @@ left entirely to vanilla and other mods (FR-14).
   vehicle for keeping the trident "in motion." As a **mod with mixins** we can address the root
   mechanic directly and will **not** require a carpet. Still worth a quick in-game confirmation in
   26.1.2 (see R-3).
-> **RESOLVED 2026-06-03 (maintainer):** The 25w41a behavior was a bug and Mojang **patched it back out** - they do not want it on Java. **26.1.2 has NO native trident killer.** Therefore this mod implements the **full core mechanic (FR-1..FR-7)** as well as the control layer (FR-5, FR-8b, FR-9, FR-10, FR-11, FR-12). the maintainer is separately verifying on his 26.1.2 client for firsthand confirmation. Decision to build a mod (not a datapack) is locked.
+> **RESOLVED 2026-06-03 (maintainer):** The 25w41a behavior was a bug and Mojang **patched it back out** - they do not want it on Java. **26.1.2 has NO native trident killer.** Therefore this mod implements the **full core mechanic (FR-1..FR-7)** as well as the control layer (FR-5, FR-8b, FR-9, FR-10, FR-11, FR-12). **CONFIRMED by the maintainer's in-game test 2026-06-03: vanilla 26.1.2 has no trident-killer behavior.** R-3 is closed. Decision to build a mod (not a datapack) is locked.
 
 - **R-3 — Native Java trident-killer support in 26.1.2 (MUST TEST BEFORE BUILDING). [NEW 2026-06-03]**
   Java snapshot **25w41a** (late 2025) reportedly added the Bedrock trident-killer behavior natively
