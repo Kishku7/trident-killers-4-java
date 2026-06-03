@@ -93,7 +93,7 @@ left entirely to vanilla and other mods (FR-14).
 
 ### Platform
 - **FR-13 — Server-side only.** The mod is server-side only and MUST NOT require any client mod to
-  function (consistent with the project-wide project rule).
+  function (project rule: a server feature must never require a client mod).
 
 ### Untouched tridents
 - **FR-14 — Hands off un-piston-moved tridents.** A thrown trident that has **not** been moved by a
