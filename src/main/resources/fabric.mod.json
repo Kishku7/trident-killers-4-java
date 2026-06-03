@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "trident_killers_4_java",
+  "version": "${version}",
+  "name": "Trident Killers 4 Java",
+  "description": "Brings the Bedrock-Edition trident-killer capability to Java Edition. Server-side only; clean-room implementation.",
+  "authors": ["Kishku7"],
+  "contact": {
+    "sources": "https://github.com/Kishku7/trident-killers-4-java"
+  },
+  "license": "ARR",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.kishku7.tridentkillers4java.TridentKillers"]
+  },
+  "mixins": ["trident_killers_4_java.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~26.1"
+  }
+}
