@@ -128,6 +128,16 @@ left entirely to vanilla and other mods (FR-14).
   Test (26.1.2, dev server / Fabric_Testing): build a piston clock with a thrown trident **without a
   carpet**, spawn mobs, and observe whether (1) the trident damages mobs after passing a block, and
   (2) the piston moves the stuck trident at all. Compare with the carpet variant.
+> **R-1/R-2 CLOSED — the maintainer's in-game test, vanilla 26.1.2 (2026-06-03):** trident thrown onto a
+> piston-driven carpet rode it exactly one trip, fell off, landed in grass, and **never moved again**.
+> Conclusion: vanilla Java pistons do not displace a stuck trident at all; block-riding is unstable
+> and not a usable motion source. Therefore the mod supplies motion/identification itself:
+> **the trident does not need to physically travel.** A piston extending into the trident's space is
+> detected as a "motion pulse" — the first pulse sets the identified flag; each pulse applies the
+> damage tick (FR-1..FR-3). The trident stays physically in place (consistent with FR-9 anti-sink),
+> making the contraption MORE reliable than Bedrock's while preserving the same player-facing design
+> (piston clock + trident = active killer). No carpet required.
+
 - **R-2 — Identification signal.** Depending on R-1, define exactly what event flags a trident as
   identified: direct piston displacement of the entity, or displacement caused by a piston-pushed
   block under/around it. Must be robust enough not to false-trigger on mob pushes (which FR-10
