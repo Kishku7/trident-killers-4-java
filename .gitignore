@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+out/
+bin/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+eclipse/
+*.launch
+.classpath
+.project
+.settings/
+
+# Fabric run dir
+run/
+
+# OS junk
+.DS_Store
+Thumbs.db
