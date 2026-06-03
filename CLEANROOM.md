@@ -16,8 +16,8 @@ trident's thrower (so looting and player kill-credit apply), and the thrown trid
 from despawning.
 
 The capability being replicated is a **game mechanic / behavior** — a method of operation. It is
-not an expressive work. This project reproduces the *behavior*, implemented in original Bedrock
-Microsoft/Mojang code.
+not an expressive work. This project reproduces the *behavior*, implemented entirely in original
+code.
 
 ## 2. What this mod does NOT use
 

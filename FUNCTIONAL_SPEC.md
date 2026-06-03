@@ -8,7 +8,7 @@
 > "trident killer" capability of Minecraft **Bedrock Edition** — in our own words, derived from
 > public descriptions of that mechanic and from observed gameplay. It is **not** transcribed from,
 > and does not reference, any third-party implementation's source code, data files, namespaces, or
-> text (including the a third-party author datapack). Implementation code for this mod is to be
+> text (including any pre-existing third-party datapack). Implementation code for this mod is to be
 > written from THIS spec only. References listed at the end are to public *behavioral* descriptions,
 > not to any author's source.
 
@@ -103,7 +103,7 @@ left entirely to vanilla and other mods (FR-14).
 
 ## 4. Open research items (resolve before / during implementation)
 
-- **R-1 — Piston vs carpet movement. [PARTIALLY ANSWERED 2026-06-03]** a third-party author's datapack design has
+- **R-1 — Piston vs carpet movement. [PARTIALLY ANSWERED 2026-06-03]** a pre-existing third-party datapack implementation has
   the player throw the trident onto a **carpet**, and the trident "rides" the carpet to get its hits.
   Finding: the carpet is primarily compensating for a **Java mechanic difference**, not just a code
   shortcoming. In standard Java, a trident that hits a block before reaching a mob deals **no** damage
