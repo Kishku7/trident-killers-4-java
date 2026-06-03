@@ -1,8 +1,10 @@
-# Gradle
+# Compiled output / build system state — never committed.
+# Users clone and run .\gradlew build (gradle wrapper IS committed) to compile.
 .gradle/
 build/
 out/
 bin/
+*.class
 
 # IDE
 .idea/
@@ -14,8 +16,13 @@ eclipse/
 .project
 .settings/
 
-# Fabric run dir
+# Fabric dev-server run dir (world, logs, properties from gradlew runServer)
 run/
+
+# Local test / tooling artifacts
+*.log
+*.tmp
+hs_err_pid*
 
 # OS junk
 .DS_Store

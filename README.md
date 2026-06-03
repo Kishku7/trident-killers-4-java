@@ -4,7 +4,7 @@
 
 Bedrock players have enjoyed trident killers for years: throw a trident, point a piston at it, and
 the moving trident kills mobs with full player credit — the heart of countless XP and drop farms.
-Java never had it. Now it does, and the Java version is better than the original.
+Java never natively had it. Now it does through a Fabric Mod, and the Java version is better than the original.
 
 ## Why this mod beats other solutions
 
