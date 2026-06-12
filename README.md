@@ -1,5 +1,7 @@
 # Trident Killers 4 Java
 
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/NVcgJJRsx)
+
 Bedrock-style trident killers for Minecraft: Java Edition.
 
 Throw a trident, point a piston at it, and the locked trident kills mobs with full player credit -
