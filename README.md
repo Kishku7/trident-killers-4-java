@@ -2,16 +2,17 @@
 
 ## Branches
 
-- [26.2](https://github.com/Kishku7/trident-killers-4-java/tree/26.2)
-- [26.1.2](https://github.com/Kishku7/trident-killers-4-java/tree/26.1.2)
-- [1.21.11](https://github.com/Kishku7/trident-killers-4-java/tree/1.21.11)
-- [1.21.8](https://github.com/Kishku7/trident-killers-4-java/tree/1.21.8)
-- [1.21.5](https://github.com/Kishku7/trident-killers-4-java/tree/1.21.5)
-- [1.21.1](https://github.com/Kishku7/trident-killers-4-java/tree/1.21.1)
-- [1.20.6](https://github.com/Kishku7/trident-killers-4-java/tree/1.20.6)
-- [1.20.4](https://github.com/Kishku7/trident-killers-4-java/tree/1.20.4)
+Source is organized by Minecraft line. Each branch holds its loader sources in `fabric/`,
+`forge/`, and `neoforge/` folders, with one subfolder per Minecraft version that loader targets
+(separate source trees and separate binaries per loader, even where one could run another's jar).
+`main` (this branch) is the overview; reusable build/test/merge scripts live on the `tooling` branch.
 
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/NVcgJJRsx)
+- [1.20.x](https://github.com/Kishku7/trident-killers-4-java/tree/1.20.x) — Minecraft 1.20 – 1.20.6
+- [1.21.x](https://github.com/Kishku7/trident-killers-4-java/tree/1.21.x) — Minecraft 1.21 – 1.21.11
+- [26.1](https://github.com/Kishku7/trident-killers-4-java/tree/26.1) — Minecraft 26.1 – 26.1.2
+- [26.2](https://github.com/Kishku7/trident-killers-4-java/tree/26.2) — Minecraft 26.2 (pre-release)
+
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/2ZxzbCzAHe)
 
 Bedrock-style trident killers for Minecraft: Java Edition.
 
@@ -23,22 +24,18 @@ XP is suppressed so orbs don't pile up). Server-side mod.
 
 ## Supported platforms
 
-Source for each Minecraft version lives on its own branch, named for the version. `main` (this
-branch) is the overview; reusable build/test/merge scripts live on the `tooling` branch.
+Per-loader source trees live under each branch's `fabric/` / `forge/` / `neoforge/` folder, one
+subfolder per targeted Minecraft version.
 
-| Branch    | Minecraft        | Fabric | Quilt | Forge | NeoForge |
-| ---       | ---              | :---:  | :---: | :---: | :---:    |
-| `1.20.4`  | 1.20 - 1.20.4    | Yes    | Yes   | Yes   | Yes      |
-| `1.20.6`  | 1.20.5 - 1.20.6  | Yes    | Yes   | Yes   | Yes      |
-| `1.21.1`  | 1.21 - 1.21.1    | Yes    | Yes   | Yes   | Yes      |
-| `1.21.5`  | 1.21.2 - 1.21.5  | Yes    | Yes   | Yes   | Yes      |
-| `1.21.8`  | 1.21.6 - 1.21.8  | Yes    | Yes   | Yes   | Yes      |
-| `1.21.11` | 1.21.9 - 1.21.11 | Yes    | Yes   | -     | Yes      |
-| `26.1.2`  | 26.1 - 26.1.2    | Yes    | Yes   | -     | Yes      |
+| MC line | Fabric / Quilt | Forge | NeoForge |
+| --- | --- | --- | --- |
+| `1.20.x` (1.20 – 1.20.6)   | 1.20 – 1.20.6   | 1.20.1, 1.20.6        | 1.20.1, 1.20.2 – 1.20.4, 1.20.6 |
+| `1.21.x` (1.21 – 1.21.11)  | 1.21 – 1.21.11  | 1.21.1, 1.21.5, 1.21.8 | 1.21.1, 1.21.5, 1.21.8, 1.21.11 |
+| `26.1` (26.1 – 26.1.2)     | 26.1 – 26.1.2   | —                     | 26.1.2 |
+| `26.2` (pre-release)       | 26.2            | —                     | 26.2 |
 
-Quilt runs the Fabric build. Each version branch holds its loader sources in subfolders
-(`fabric/`, `forge/`, `neoforge/`; 1.20.4 uses `fabric/` + `forge-neoforge/`) plus a BUILD.md.
-Requires Fabric API on Fabric/Quilt.
+Forge support stops at 1.21.8 — there is no working Forge build toolchain for 1.21.9+ or 26.x.
+Quilt runs the Fabric build. Requires Fabric API on Fabric / Quilt.
 
 ## Downloads
 
