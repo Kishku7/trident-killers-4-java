@@ -9,7 +9,7 @@ repositories {
     mavenCentral()
 }
 
-version = '1.2.3+26.2-neoforge'
+version = '1.2.5+26.2-neoforge'
 group = 'com.kishku7'
 base { archivesName = 'trident-killers-4-java' }
 
