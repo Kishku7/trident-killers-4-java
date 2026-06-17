@@ -9,14 +9,14 @@ repositories {
     mavenCentral()
 }
 
-version = '1.2.5+26.2-neoforge'
+version = '1.2.6+26.2-neoforge'
 group = 'com.kishku7'
 base { archivesName = 'trident-killers-4-java' }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
-    version = '26.2.0-alpha.0+rc-2.20260614.200134'
+    version = '26.2.0.1-beta'
 }
 
 tasks.withType(JavaCompile).configureEach {
