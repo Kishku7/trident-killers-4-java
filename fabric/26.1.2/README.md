@@ -1,19 +1,19 @@
-# Trident Killers 4 Java - Fabric 26.1 - 26.1.2
+# Trident Killers 4 Java - Fabric 26.1.2 (Minecraft 26.1 - 26.1.2)
 
-This source tree builds the **fabric** binary for **Minecraft 26.1 - 26.1.2**.
+This source tree builds the **Fabric** binary for **Minecraft 26.1 - 26.1.2**. Server-side mod.
 
-- Loader: Fabric (the Fabric jar also runs on Quilt)
+- Loader: Fabric
 - Minecraft: 26.1 - 26.1.2
 - Java: 25
-- Mod version: 1.2.3
-- Quilt: yes (Quilt loads the Fabric jar)
+- Toolchain: fabric-loom
+- Quilt: yes (Quilt loads the Fabric jar - 26.x needs the `targetNamespace=official` launch flag)
 
-Build (from this folder):
+## Build
 
 ```
-./gradlew build
+./gradlew build      # Windows: .\gradlew.bat build
 ```
 
-Output jar: `build/libs/trident-killers-4-java-1.2.3+26.1.2.jar`
+Output: `build/libs/trident-killers-4-java-*.jar`
 
-Server-side mod - install on the server. Part of the [`26.1` branch](../../README.md). Downloads: [Modrinth](https://modrinth.com/mod/trident-killers-4-java) - [Releases](https://github.com/Kishku7/trident-killers-4-java/releases).
+Part of the [`26.1` branch](https://github.com/Kishku7/trident-killers-4-java/tree/26.1). [Modrinth](https://modrinth.com/mod/trident-killers-4-java) - [Releases](https://github.com/Kishku7/trident-killers-4-java/releases).
