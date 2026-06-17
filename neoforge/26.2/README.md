@@ -1,18 +1,18 @@
-# Trident Killers 4 Java - NeoForge 26.2 (pre-release: pre/rc builds)
+# Trident Killers 4 Java - NeoForge 26.2 (Minecraft 26.2 (pre-release))
 
-This source tree builds the **neoforge** binary for **Minecraft 26.2 (pre-release: pre/rc builds)**.
+This source tree builds the **NeoForge** binary for **Minecraft 26.2 (pre-release)**. Server-side mod.
 
 - Loader: NeoForge
-- Minecraft: 26.2 (pre-release: pre/rc builds)
+- Minecraft: 26.2 (pre-release)
 - Java: 25
-- Mod version: 1.2.3
+- Toolchain: ModDevGradle (MDG), built vs a NeoForge 26.2 alpha
 
-Build (from this folder):
+## Build
 
 ```
-./gradlew build
+./gradlew build      # Windows: .\gradlew.bat build
 ```
 
-Output jar: `build/libs/trident-killers-4-java-1.2.3+26.2-neoforge.jar`
+Output: `build/libs/trident-killers-4-java-*.jar`
 
-Server-side mod - install on the server. Part of the [`26.2` branch](../../README.md). Downloads: [Modrinth](https://modrinth.com/mod/trident-killers-4-java) - [Releases](https://github.com/Kishku7/trident-killers-4-java/releases).
+Part of the [`26.2` branch](https://github.com/Kishku7/trident-killers-4-java/tree/26.2). [Modrinth](https://modrinth.com/mod/trident-killers-4-java) - [Releases](https://github.com/Kishku7/trident-killers-4-java/releases).
