@@ -31,6 +31,5 @@ Output: `build/libs/trident-killers-4-java-*.jar`. Requires JDK 25.
 - Reusable build/test scripts: [`tooling`](https://github.com/Kishku7/trident-killers-4-java/tree/tooling)
 - Modrinth: https://modrinth.com/mod/trident-killers-4-java
 - Releases: https://github.com/Kishku7/trident-killers-4-java/releases
-- Discord: https://discord.gg/2ZxzbCzAHe
 
 By Kishku7. All Rights Reserved.
