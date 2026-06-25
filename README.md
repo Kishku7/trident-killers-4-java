@@ -12,8 +12,7 @@ trees/jars). `main` (this branch) is the overview; reusable build/test scripts l
 
 - [1.20.x](https://github.com/Kishku7/trident-killers-4-java/tree/1.20.x) - Minecraft 1.20 - 1.20.6
 - [1.21.x](https://github.com/Kishku7/trident-killers-4-java/tree/1.21.x) - Minecraft 1.21 - 1.21.11
-- [26.1](https://github.com/Kishku7/trident-killers-4-java/tree/26.1) - Minecraft 26.1 - 26.1.2
-- [26.2](https://github.com/Kishku7/trident-killers-4-java/tree/26.2) - Minecraft 26.2 (pre-release)
+- [26](https://github.com/Kishku7/trident-killers-4-java/tree/26) - Minecraft 26.1 -> 26.3-snapshot-1 (unified line; Fabric + NeoForge)
 
 ## Supported platforms
 
@@ -21,8 +20,7 @@ trees/jars). `main` (this branch) is the overview; reusable build/test scripts l
 | --- | --- | --- | --- |
 | `1.20.x` (1.20 - 1.20.6)   | 1.20 - 1.20.6 (+ Quilt)   | 1.20.1, 1.20.5 - 1.20.6 | 1.20.1, 1.20.2 - 1.20.4, 1.20.5 - 1.20.6 |
 | `1.21.x` (1.21 - 1.21.11)  | 1.21 - 1.21.11 (+ Quilt)  | 1.21.1, 1.21.5, 1.21.8 | 1.21.1, 1.21.5, 1.21.8, 1.21.11 |
-| `26.1` (26.1 - 26.1.2)     | 26.1 - 26.1.2 (+ Quilt)   | - | 26.1.2 |
-| `26.2` (pre-release)       | 26.2 (+ Quilt)            | - | 26.2 |
+| `26` (unified 26.x) | 26.1 -> 26.3-snapshot-1 | - | 26.1.2 / 26.2 |
 
 - **Forge** is supported through **1.21.8** (the FG6 ceiling - no working Forge toolchain for 1.21.9+ or
   26.x). The 1.20.2 - 1.20.4 range is covered on NeoForge (a dedicated gap build); a Forge build for that
