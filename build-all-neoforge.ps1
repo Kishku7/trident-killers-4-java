@@ -1,0 +1,24 @@
+# build-all-neoforge.ps1 -- TK4J unified NeoForge source. (No 26.3 NeoForge yet.)
+param([string[]]$Versions)
+$ErrorActionPreference = "Stop"
+$repo = Split-Path -Parent $MyInvocation.MyCommand.Path
+$nf = Join-Path $repo "NeoForge"; $dist = Join-Path $repo "dist"
+New-Item -ItemType Directory -Force -Path $dist | Out-Null
+$matrix = [ordered]@{
+  "26.1" = @{ mc="26.1.2"; neo="26.1.2.30-beta" }
+  "26.2" = @{ mc="26.2";   neo="26.2.0.1-beta" }
+}
+if (-not $Versions -or $Versions.Count -eq 0) { $Versions = @($matrix.Keys) }
+$modver = (Select-String -Path (Join-Path $nf "gradle.properties") -Pattern '^mod_version=(.+)$').Matches[0].Groups[1].Value
+foreach ($v in $Versions) {
+  $m = $matrix[$v]; if (-not $m) { throw "Unknown $v" }
+  Write-Host "=== TK4J NeoForge $v (neo=$($m.neo)) ==="
+  Push-Location $nf
+  & ".\gradlew.bat" clean build "-Pminecraft_version=$($m.mc)" "-Pneo_version=$($m.neo)" --no-daemon
+  $rc = $LASTEXITCODE; Pop-Location
+  if ($rc -ne 0) { throw "NeoForge build FAILED for $v" }
+  $jar = Get-ChildItem (Join-Path $nf "build\libs") -Filter "trident-killers-4-java-*.jar" | Where-Object { $_.Name -notmatch 'sources|slim' } | Sort-Object LastWriteTime | Select-Object -Last 1
+  Copy-Item $jar.FullName (Join-Path $dist ("trident-killers-4-java-{0}+{1}-neoforge.jar" -f $modver,$v)) -Force
+  Write-Host "  -> $v done"
+}
+Write-Host "NeoForge builds complete."
