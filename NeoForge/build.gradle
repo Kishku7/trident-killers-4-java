@@ -26,9 +26,7 @@ neoForge {
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
 
 processResources {
-    inputs.property('mcRange', project.mc_range)
-    inputs.property('neoforgeRange', project.neoforge_range)
-    filesMatching('META-INF/neoforge.mods.toml') {
-        filter { line -> line.replace('${mcRange}', project.mc_range).replace('${neoforgeRange}', project.neoforge_range) }
-    }
+    def ep = [mod_version: mod_version, mcRange: project.mc_range, neoforgeRange: project.neoforge_range]
+    inputs.properties(ep)
+    filesMatching('META-INF/neoforge.mods.toml') { expand(ep) }
 }
