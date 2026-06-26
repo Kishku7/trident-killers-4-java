@@ -24,3 +24,11 @@ neoForge {
 }
 
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+processResources {
+    inputs.property('mcRange', project.mc_range)
+    inputs.property('neoforgeRange', project.neoforge_range)
+    filesMatching('META-INF/neoforge.mods.toml') {
+        filter { line -> line.replace('${mcRange}', project.mc_range).replace('${neoforgeRange}', project.neoforge_range) }
+    }
+}
