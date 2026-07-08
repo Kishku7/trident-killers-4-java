@@ -1,0 +1,48 @@
+// Trident Killers 4 Java - Fabric cell, MC 1.21.1 (single-cross-version-source / Cog model).
+// Compiles the Cog-generated shared_minecraft output (gen/), NOT shared_minecraft directly:
+// version drift is resolved by scripts/cog-gen.ps1 (compat.py), because pre-26 Fabric runs on
+// the intermediary runtime. Proven loom-remap toolchain (compile against MC 1.21.1). JDK 21,
+// -Xlint:all + zero warnings.
+
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version '1.16-SNAPSHOT'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+// Cog-generated shared_minecraft source + resources (produced by cog-gen.ps1 for this MC version).
+sourceSets.main.java.srcDir "gen/src/main/java"
+sourceSets.main.resources.srcDir "gen/src/main/resources"
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+processResources {
+    def packFormat = (project.findProperty("pack_format") ?: System.getenv("PACK_FORMAT") ?: project.pack_format)
+    inputs.properties(["version": project.version, "mcLower": project.mc_lower, "mcUpper": project.mc_upper, "packFormat": packFormat])
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version, "mcLower": project.mc_lower, "mcUpper": project.mc_upper
+    }
+    filesMatching("pack.mcmeta") {
+        expand "packFormat": packFormat
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 21
+    it.options.compilerArgs += ['-Xlint:all']
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}

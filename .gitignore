@@ -10,3 +10,7 @@ dist/
 **/build/
 **/.gradle/
 _release_*/
+
+# Cog-generated per-cell shared_minecraft source (reproducible via scripts/cog-gen.ps1);
+# never committed. The tracked cog tooling (_codegen/, scripts/cog-gen.ps1) IS committed.
+**/gen/

@@ -1,21 +1,10 @@
 package com.kishku7.tridentkillers4java;
 
-import com.kishku7.tridentkillers4java.mixin.LivingEntityAccessor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.piston.PistonMovingBlockEntity;
-import net.minecraft.world.phys.AABB;
-
-import java.util.List;
-import java.util.UUID;
+//[[[cog
+// import cog, compat
+// cog.outl(compat.logic_imports(mcver))
+//]]]
+//[[[end]]]
 
 /**
  * Core trident-killer behavior (clean-room; implemented from FUNCTIONAL_SPEC.md).
@@ -35,8 +24,11 @@ public final class TridentKillerLogic {
     /** Inflation applied to the trident AABB for target selection (FR-6: default hitbox, small tolerance). */
     private static final double HIT_INFLATE = 0.25D;
 
-    /** Kill-credit memory ticks; mirrors vanilla player-hurt memory window. */
-    private static final int CREDIT_MEMORY_TICKS = 100;
+    //[[[cog
+    // import cog, compat
+    // cog.outl(compat.credit_fields(mcver))
+    //]]]
+    //[[[end]]]
 
     private TridentKillerLogic() {
     }
@@ -83,13 +75,20 @@ public final class TridentKillerLogic {
         if (!(trident.level() instanceof ServerLevel serverLevel)) {
             return;
         }
-        Entity ownerEntity = trident.getOwner(); // resolves only while the owner is loaded/online
         boolean ownerOnline = ownerUuid != null
                 && serverLevel.getServer().getPlayerList().getPlayer(ownerUuid) != null;
 
-        // Same damage-source convention vanilla uses for trident damage (owner falls back to the trident).
-        DamageSource source = trident.damageSources()
-                .trident(trident, ownerEntity != null ? ownerEntity : trident);
+        //[[[cog
+        // import cog, compat
+        // cog.outl(compat.pickup_stmt(mcver))
+        //]]]
+        //[[[end]]]
+
+        //[[[cog
+        // import cog, compat
+        // cog.outl(compat.damage_source_setup(mcver))
+        //]]]
+        //[[[end]]]
 
         AABB hitBox = trident.getBoundingBox().inflate(HIT_INFLATE);
         List<Entity> targets = serverLevel.getEntities(trident, hitBox,
@@ -98,13 +97,17 @@ public final class TridentKillerLogic {
         for (Entity target : targets) {
             Mob mob = (Mob) target;
 
-            float damage = EnchantmentHelper.modifyDamage(
-                    serverLevel, trident.getWeaponItem(), mob, source, BASE_DAMAGE); // Impaling etc. (FR-6)
+            //[[[cog
+            // import cog, compat
+            // cog.outl(compat.enchant_damage_stmt(mcver))
+            //]]]
+            //[[[end]]]
 
-            if (ownerUuid != null) {
-                // Player kill credit by UUID - works with the owner offline (FR-8a).
-                mob.setLastHurtByPlayer(ownerUuid, CREDIT_MEMORY_TICKS);
-            }
+            //[[[cog
+            // import cog, compat
+            // cog.outl(compat.credit_in_loop(mcver))
+            //]]]
+            //[[[end]]]
 
             boolean suppressXp = !ownerOnline; // owner offline OR no owner -> no XP piles up (FR-8b)
             LivingEntityAccessor xs = (LivingEntityAccessor) mob;
@@ -113,7 +116,11 @@ public final class TridentKillerLogic {
                 xs.tk4j$setSkipDropExperience(true);
             }
 
-            mob.hurtOrSimulate(source, damage);
+            //[[[cog
+            // import cog, compat
+            // cog.outl(compat.hurt_call(mcver))
+            //]]]
+            //[[[end]]]
 
             // If the mob survived, restore its XP flag so a later legitimate death is unaffected.
             if (suppressXp && mob.isAlive()) {
@@ -121,4 +128,9 @@ public final class TridentKillerLogic {
             }
         }
     }
+    //[[[cog
+    // import cog, compat
+    // cog.out(compat.turret_helpers(mcver))
+    //]]]
+    //[[[end]]]
 }
