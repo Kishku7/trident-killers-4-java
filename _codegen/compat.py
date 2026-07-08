@@ -99,13 +99,16 @@ def has_nbt_bridge(mcver):
 
 
 def compat_level(mcver):
-    """pre-26 mixins.json compatibilityLevel. JAVA_17 on the 1.20.* line, JAVA_21 otherwise.
+    """mixins.json compatibilityLevel. JAVA_17 on the 1.20.* line (pre-1.20.5), JAVA_25 on the
+    26.x line (compiled at release 25 -- the 26 master shape), JAVA_21 for everything between.
 
     (Classic-SRG Forge < 1.21.2 also wants JAVA_17; cog-gen handles that Forge override the same
-    way Chunksmith does, so this base rule keys purely on the 1.20.* line.)"""
+    way Chunksmith does, so this base rule keys purely on the version line.)"""
     v = _parse(mcver)
     if v < (1, 20, 5):
         return "JAVA_17"
+    if v[0] >= 26:
+        return "JAVA_25"
     return "JAVA_21"
 
 

@@ -81,11 +81,16 @@ New-Item -ItemType Directory -Force -Path $genRes  | Out-Null
 
 # --- Step 2: copy shared_minecraft java + resources verbatim ---
 Copy-Item -Recurse -Force (Join-Path $sharedJava '*') $genJava
-# Copy shared resources EXCEPT pack.mcmeta (each pre-26 cell owns its own pack.mcmeta with the
-# correct per-version pack_format form; the shared one is the 26 range-form). The cell's own
-# src/main/resources supplies pack.mcmeta + fabric.mod.json; mixins.json is regenerated below.
+# pack.mcmeta handling by version line:
+#   pre-26 cells own their own per-version pack.mcmeta (cell src/main/resources) -> SKIP the shared
+#     one here (the shared copy is the 26 range-form; copying it would duplicate/conflict).
+#   26 cells do NOT own a pack.mcmeta (they used to srcDir shared_minecraft directly) -> COPY the
+#     shared range-form template into gen/ so it lands in the compiled resources; the 26 cell's
+#     processResources still expands ${packFormat}.
+Push-Location $codegen
+try { $is26 = (& python -c "import compat,sys; sys.stdout.write('1' if compat.is_26('$McVer') else '0')") } finally { Pop-Location }
 if (Test-Path $sharedRes) {
-    Get-ChildItem -Force $sharedRes | Where-Object { $_.Name -ne 'pack.mcmeta' } | ForEach-Object {
+    Get-ChildItem -Force $sharedRes | Where-Object { $is26 -eq '1' -or $_.Name -ne 'pack.mcmeta' } | ForEach-Object {
         Copy-Item -Recurse -Force $_.FullName $genRes
     }
 }
@@ -119,7 +124,7 @@ try {
 Push-Location $codegen
 try {
     $forgeOldMixin = if ($Loader -eq 'Forge') { 'True' } else { 'False' }
-    $compatLevel   = (& python -c "import compat,sys; v=compat._parse('$McVer'); base='$compatLevelBase'; sys.stdout.write('JAVA_17' if (base=='JAVA_17' or ($forgeOldMixin and v[:3]<(1,21,2))) else 'JAVA_21')")
+    $compatLevel   = (& python -c "import compat,sys; v=compat._parse('$McVer'); base='$compatLevelBase'; sys.stdout.write('JAVA_17' if (base=='JAVA_17' or ($forgeOldMixin and v[:3]<(1,21,2))) else base)")
 } finally {
     Pop-Location
 }

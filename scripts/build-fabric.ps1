@@ -1,5 +1,7 @@
 # build-fabric.ps1 -- TK4J Fabric builds: the unified 26 matrix (Fabric/26) + pre-26 cog cells (Fabric/<v>).
-# Usage: pwsh scripts/build-fabric.ps1 [cell ...]   (none = all; e.g. 26.3 ; 1.21.8 26.1)
+# Every cell is now cog-driven (cog_sources is the SOLE source of the drift files): each build runs
+# scripts/cog-gen.ps1 to materialise gen/, then that cell's gradlew clean build, then copies the jar
+# to dist/. Usage: pwsh scripts/build-fabric.ps1 [cell ...]   (none = all; e.g. 26.3 ; 1.21.8 26.1)
 param([string[]]$Only)
 $ErrorActionPreference = "Stop"
 $repo   = Split-Path $PSScriptRoot -Parent
@@ -17,24 +19,43 @@ $m26 = [ordered]@{
   "26.2" = @{ mc="26.2";            api="0.152.1+26.2";   loader="0.19.3"; lo="26.2-";        hi="26.3";          pf="88" }
   "26.3" = @{ mc="26.3-snapshot-3"; api="0.154.3+26.3";   loader="0.19.3"; lo="26.3-alpha.3"; hi="26.3-alpha.4";  pf="91" }
 }
+# Auto-discover pre-26 cells from the dirs (everything under Fabric/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory -EA SilentlyContinue | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)
 $targets = if ($Only) { $Only } else { $preCells + @($m26.Keys) }
+
+function Copy-Jar($cell, $label) {
+  $jar = Get-ChildItem (Join-Path $cell "build\libs") -Filter "trident-killers-4-java-*.jar" |
+         Where-Object { $_.Name -notmatch 'sources|dev|slim' } | Sort-Object LastWriteTime | Select-Object -Last 1
+  if (-not $jar) { throw "No built jar for Fabric/$label" }
+  Copy-Item $jar.FullName (Join-Path $dist $jar.Name) -Force
+  Write-Host "  -> dist $($jar.Name)"
+}
 
 function Build-26($v) {
   $cell = Join-Path $root "26"; $m = $m26[$v]
   $modver = (Select-String -Path (Join-Path $cell "gradle.properties") -Pattern '^mod_version=(.+)$').Matches[0].Groups[1].Value
   Write-Host "=== TK4J Fabric/26 -> $v  (mc=$($m.mc)  pf=$($m.pf)) ==="
+  # 26.x cog source is uniform across all 26.x; cog-gen once with the target version is fine.
+  & $cogGen -Cell "$loader/26" -McVer $m.mc -Loader $loader
+  if ($LASTEXITCODE -ne 0) { throw "cog-gen FAILED for Fabric/26 -> $v" }
   Push-Location $cell
   & ".\gradlew.bat" clean build "-Pminecraft_version=$($m.mc)" "-Pfabric_api_version=$($m.api)" "-Ploader_version=$($m.loader)" "-Pmc_lower=$($m.lo)" "-Pmc_upper=$($m.hi)" "-Ppack_format=$($m.pf)" --no-daemon
   $rc = $LASTEXITCODE; Pop-Location
   if ($rc -ne 0) { throw "Fabric build FAILED for $v" }
-  $jar = Get-ChildItem (Join-Path $cell "build\libs") -Filter "trident-killers-4-java-*.jar" | Where-Object { $_.Name -notmatch 'sources' } | Sort-Object LastWriteTime | Select-Object -Last 1
-  Copy-Item $jar.FullName (Join-Path $dist ("trident-killers-4-java-{0}+{1}-fabric.jar" -f $modver,$v)) -Force
-  Write-Host "  -> dist trident-killers-4-java-$modver+$v-fabric.jar"
+  Copy-Jar $cell $v
 }
 
 function Build-PreCell($v) {
-  throw "pre-26 Fabric cell '$v' not yet wired (Phase D cog build-out pending)"
+  $cell = Join-Path $root $v
+  if (-not (Test-Path $cell)) { throw "Unknown Fabric cell '$v' (have: $($preCells -join ', ') ; 26 line: $($m26.Keys -join ', '))" }
+  Write-Host "=== TK4J Fabric/$v  (pre-26 cog cell) ==="
+  & $cogGen -Cell "$loader/$v" -McVer $v -Loader $loader
+  if ($LASTEXITCODE -ne 0) { throw "cog-gen FAILED for Fabric/$v" }
+  Push-Location $cell
+  & ".\gradlew.bat" clean build --no-daemon
+  $rc = $LASTEXITCODE; Pop-Location
+  if ($rc -ne 0) { throw "Fabric build FAILED for $v" }
+  Copy-Jar $cell $v
 }
 
 foreach ($t in $targets) {

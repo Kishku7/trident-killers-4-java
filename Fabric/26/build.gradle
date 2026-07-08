@@ -7,9 +7,13 @@ group = project.maven_group
 
 base { archivesName = project.archives_base_name }
 
-// Shared MC-coupled core + mixins (single source of truth).
-sourceSets.main.java.srcDir "../../shared_minecraft/src/main/java"
-sourceSets.main.resources.srcDir "../../shared_minecraft/src/main/resources"
+// Cog-generated single-source output (produced by scripts/cog-gen.ps1 for this 26.x target):
+// shared_minecraft (the 26 master) copied into gen/ then overlaid with the cog_sources drift
+// files -- cog_sources is the SOLE source of ThrownTridentMixin/TridentKillerLogic. The 26 cog
+// output reproduces the 26 master byte-for-byte, so the built jar is unchanged. build-*.ps1
+// runs cog-gen before gradlew; a manual gradlew build needs cog-gen run first.
+sourceSets.main.java.srcDir "gen/src/main/java"
+sourceSets.main.resources.srcDir "gen/src/main/resources"
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"

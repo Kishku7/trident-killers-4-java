@@ -1,6 +1,11 @@
-# build-neoforge.ps1 -- build ChunkSmith NeoForge jars into dist/.
+# build-neoforge.ps1 -- TK4J NeoForge builds into dist/.
 # Covers BOTH the pre-26 per-version cells (NeoForge/<v>, cog-gen + gradlew) AND the unified 26 line
-# (NeoForge/26, -P matrix + PACK_FORMAT range-form). MC 26.3 has no NeoForge yet. Lives in scripts/.
+# (NeoForge/26, -P matrix + pack_format range-form). MC 26.3 has NO NeoForge upstream yet, so the 26
+# line is 26.1/26.2 only. cog_sources is the SOLE source of the drift files -- every cell (incl. the
+# 26 cell, now cog-driven) runs cog-gen before gradlew. Pre-26 cells auto-discovered. Lives in scripts/.
+#
+# NeoForge/1.20.1 is a Forge-1.20.1 fork (SRG runtime): cog-gen uses -Loader Forge there so the
+# mixins.json gets the classic-SRG refmap key. Every other NeoForge cell uses -Loader NeoForge.
 #
 # Usage:
 #   pwsh scripts/build-neoforge.ps1               # build EVERYTHING (all pre-26 cells + 26.1/26.2)
@@ -15,12 +20,13 @@ $dist   = Join-Path $repo "dist"
 $cogGen = Join-Path $PSScriptRoot "cog-gen.ps1"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
-# 26-line matrix (unified NeoForge/26 cell; -P + PACK_FORMAT). pack_format per Memory/knowledge/pack-formats.md.
+# 26-line matrix (unified NeoForge/26 cell; -P + pack_format). pack_format per Memory/knowledge/pack-formats.md.
 $m26 = [ordered]@{
-  "26.1" = @{ nf = "26.1.0.15-beta"; nfRange = "[26.1.0.0-beta,)"; mcRange = "[26.1,26.2)"; packFormat = "84" }
-  "26.2" = @{ nf = "26.2.0.1-beta";  nfRange = "[26.2.0-alpha,)"; mcRange = "[26.2,26.3)"; packFormat = "88" }
+  "26.1" = @{ mc="26.1.2"; nf="26.1.0.15-beta"; nfRange="[26.1.0.0-beta,)"; mcRange="[26.1,26.2)"; pf="84" }
+  "26.2" = @{ mc="26.2";   nf="26.2.0.1-beta";  nfRange="[26.2.0-alpha,)"; mcRange="[26.2,26.3)"; pf="88" }
 }
-$preCells = Get-ChildItem $root -Directory | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object
+# Auto-discover pre-26 cells (everything under NeoForge/ except the 26 matrix cell).
+$preCells = @(Get-ChildItem $root -Directory | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)
 
 if ($Only) {
   $targets = $Only
@@ -33,41 +39,40 @@ if ($Only) {
   $targets = @($preCells) + @($m26.Keys)
 }
 
+function Copy-Jar($cell, $label) {
+  $jar = Get-ChildItem (Join-Path $cell "build\libs") -Filter "trident-killers-4-java-*.jar" |
+         Where-Object { $_.Name -notmatch 'sources|dev|slim|noshade' } | Sort-Object LastWriteTime | Select-Object -Last 1
+  if (-not $jar) { throw "No built jar for NeoForge/$label" }
+  Copy-Item $jar.FullName (Join-Path $dist $jar.Name) -Force
+  Write-Host "  -> dist $($jar.Name)"
+}
+
 function Build-PreCell($v) {
   $cellPath = Join-Path $root $v
-  $modver = (Select-String -Path (Join-Path $cellPath "gradle.properties") -Pattern '^version=(.+)$').Matches[0].Groups[1].Value
-  Write-Host "=== $loader/$v  (pre-26 cell, modver=$modver) ==="
-  & $cogGen -Cell "$loader/$v" -McVer $v -Loader $loader
+  # NeoForge 1.20.1 is a Forge fork -> cog-gen with -Loader Forge (classic-SRG refmap); else NeoForge.
+  $cogLoader = if ($v -eq "1.20.1") { "Forge" } else { "NeoForge" }
+  Write-Host "=== TK4J $loader/$v  (pre-26 cog cell, cogLoader=$cogLoader) ==="
+  & $cogGen -Cell "$loader/$v" -McVer $v -Loader $cogLoader
   if ($LASTEXITCODE -ne 0) { throw "cog-gen FAILED for $loader/$v" }
   Push-Location $cellPath
   & ".\gradlew.bat" clean build --no-daemon
   $rc = $LASTEXITCODE; Pop-Location
   if ($rc -ne 0) { throw "Build FAILED for $loader/$v" }
-  $jar = Get-ChildItem (Join-Path $cellPath "build\libs") -Filter "Chunksmith-$loader-*.jar" |
-         Where-Object { $_.Name -notmatch 'noshade|slim|sources|dev-shadow' } | Sort-Object LastWriteTime | Select-Object -Last 1
-  if (-not $jar) { throw "No built jar for $loader/$v" }
-  $dest = Join-Path $dist ("Chunksmith-{0}-{1}+mc{2}.jar" -f $loader, $modver, $v)
-  Copy-Item $jar.FullName $dest -Force
-  Write-Host "  -> $dest"
+  Copy-Jar $cellPath $v
 }
 
 function Build-26($v) {
   $cell = Join-Path $root "26"
-  $mm = $m26[$v]
-  $modver = (Select-String -Path (Join-Path $cell "gradle.properties") -Pattern '^version=(.+)$').Matches[0].Groups[1].Value
-  Write-Host "=== $loader/26 -> $v  (neoforge=$($mm.nf)  pack_format=$($mm.packFormat)) ==="
-  $env:NEOFORGE_RANGE = $mm.nfRange
-  $env:MC_RANGE = $mm.mcRange
-  $env:PACK_FORMAT = $mm.packFormat
+  $m = $m26[$v]
+  Write-Host "=== TK4J $loader/26 -> $v  (mc=$($m.mc)  neoforge=$($m.nf)  pack_format=$($m.pf)) ==="
+  # 26.x cog source is uniform across all 26.x; cog-gen once with the target version is fine.
+  & $cogGen -Cell "$loader/26" -McVer $m.mc -Loader $loader
+  if ($LASTEXITCODE -ne 0) { throw "cog-gen FAILED for $loader/26 -> $v" }
   Push-Location $cell
-  & ".\gradlew.bat" clean build "-PneoforgeVersion=$($mm.nf)" --no-daemon
+  & ".\gradlew.bat" clean build "-Pminecraft_version=$($m.mc)" "-Pneo_version=$($m.nf)" "-Pneoforge_range=$($m.nfRange)" "-Pmc_range=$($m.mcRange)" "-Ppack_format=$($m.pf)" --no-daemon
   $rc = $LASTEXITCODE; Pop-Location
   if ($rc -ne 0) { throw "Build FAILED for $v" }
-  $jar = Get-ChildItem (Join-Path $cell "build\libs") -Filter "Chunksmith-NeoForge-*.jar" |
-         Where-Object { $_.Name -notmatch 'slim|sources' } | Sort-Object LastWriteTime | Select-Object -Last 1
-  $dest = Join-Path $dist ("Chunksmith-NeoForge-{0}+mc{1}.jar" -f $modver, $v)
-  Copy-Item $jar.FullName $dest -Force
-  Write-Host "  -> $dest"
+  Copy-Jar $cell $v
 }
 
 foreach ($t in $targets) {
