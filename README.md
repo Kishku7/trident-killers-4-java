@@ -16,14 +16,7 @@ die with full player credit. Adds no blocks, items, or commands.
 
 ## Supported versions
 
-Minecraft **1.20 through 26.3**, from one codebase:
-
-- **Fabric** / **Quilt** - every version, 1.20 through 26.3.
-- **NeoForge** - 1.20.1 through 1.21.11, plus 26.1 and 26.2.
-- **Forge** - 1.20 through 1.21.11, except 1.21.9 (no Forge on the 26 line).
-
-No Fabric API dependency. On the Modrinth page, pick the file that matches your Minecraft version and
-loader.
+Minecraft **1.20 through 26.3** - Fabric and Quilt across the whole range, NeoForge on 1.20.1-1.21.11 plus 26.1/26.2, and Forge on 1.20-1.21.11 (no Fabric API dependency; on Modrinth, pick the file matching your version and loader).
 
 ## Links
 
