@@ -126,20 +126,29 @@ def forge_needs_refmap(mcver):
 # ...projectile.arrow (26). Emitted as the package segment for import lines.
 # ---------------------------------------------------------------------------
 
-def projectile_package(mcver):
+def projectile_package(mcver, loader=None):
     """The entity-projectile package for ThrownTrident/AbstractArrow: the '.arrow' subpackage
-    landed at 26. pre-26: net.minecraft.world.entity.projectile ; 26: ...projectile.arrow."""
-    if is_26(mcver):
+    landed at MC 1.21.11 (verified on-disk: 1.21.9 = ...projectile ; 1.21.11 and 26.x =
+    ...projectile.arrow). The deciding axis is the COMPILE classpath, not the nominal cell
+    version: NeoForge/Forge cells compile against their true version, but Fabric cells compile
+    against the FLOOR of their range (e.g. the Fabric 1.21.11 cell compiles vs 1.21.9, where the
+    class is still ...projectile). So Fabric never takes the .arrow subpackage pre-26; 26.x is
+    .arrow on every loader (the master shape). v >= 26: .arrow ; else .arrow iff
+    v >= 1.21.11 AND loader is not Fabric."""
+    v = _parse(mcver)
+    if v[0] >= 26:
+        return "net.minecraft.world.entity.projectile.arrow"
+    if v >= (1, 21, 11) and loader != "Fabric":
         return "net.minecraft.world.entity.projectile.arrow"
     return "net.minecraft.world.entity.projectile"
 
 
-def redirect_descriptor(mcver):
+def redirect_descriptor(mcver, loader=None):
     """The @Redirect @At target descriptor for ThrownTrident.ownedBy in playerTouch.
 
     Only the '.../arrow/...' insertion differs across eras (STRING-in-annotation -> Cog is
     mandatory; a reflection facade cannot touch it)."""
-    pkg = projectile_package(mcver).replace(".", "/")
+    pkg = projectile_package(mcver, loader).replace(".", "/")
     return "L%s/ThrownTrident;ownedBy(Lnet/minecraft/world/entity/Entity;)Z" % pkg
 
 
@@ -346,43 +355,50 @@ def turret_helpers(mcver):
         "}\n")
 
     if _parse(mcver) < (1, 20, 5):
-        # Reflective ctor (1.20.4): 3-arg on 1.20/1.20.1, 4-arg reflective fallback on 1.20.2+.
+        # Reflective ctor (1.20.2 - 1.20.4): the ServerPlayer ctor is 4-arg (a ClientInformation
+        # param was added in 1.20.2); 1.20/1.20.1 used the 3-arg (server, level, profile). This
+        # single 1.20.x jar COMPILES against a 1.20.2+ classpath where the 3-arg ctor does NOT
+        # exist, so a direct 'new ServerPlayer(server, level, profile)' would fail to COMPILE (a
+        # NoSuchMethodError catch is a runtime guard; the symbol must still resolve). Both ctors
+        # are therefore invoked REFLECTIVELY by SHAPE.
         new_turret = (
             "\n"
             "/**\n"
             " * Version-adaptive ServerPlayer construction (single jar, 1.20 - 1.20.4):\n"
             " * 1.20/1.20.1 use (server, level, profile); 1.20.2+ added a ClientInformation\n"
-            " * parameter. The fallback finds the 4-arg constructor and builds the default\n"
+            " * parameter. Both are invoked reflectively (this cell compiles against a 1.20.2+\n"
+            " * classpath where the 3-arg ctor is absent); the 4-arg path builds the default\n"
             " * ClientInformation by SHAPE (static no-arg factory returning the same type),\n"
             " * so it works under any runtime mappings without naming the class.\n"
             " */\n"
             "private static ServerPlayer newTurret(ServerLevel level, GameProfile profile) {\n"
             "    try {\n"
-            "        return new ServerPlayer(level.getServer(), level, profile); // 1.20 / 1.20.1\n"
-            "    } catch (NoSuchMethodError pre1202) {\n"
-            "        try {\n"
-            "            for (java.lang.reflect.Constructor<?> c : ServerPlayer.class.getDeclaredConstructors()) {\n"
-            "                Class<?>[] params = c.getParameterTypes();\n"
-            "                if (params.length == 4\n"
-            "                        && params[1] == ServerLevel.class\n"
-            "                        && params[2] == GameProfile.class) {\n"
-            "                    Class<?> clientInfoType = params[3];\n"
-            "                    Object defaultInfo = null;\n"
-            "                    for (java.lang.reflect.Method m : clientInfoType.getDeclaredMethods()) {\n"
-            "                        if (java.lang.reflect.Modifier.isStatic(m.getModifiers())\n"
-            "                                && m.getParameterCount() == 0\n"
-            "                                && m.getReturnType() == clientInfoType) {\n"
-            "                            defaultInfo = m.invoke(null);\n"
-            "                            break;\n"
-            "                        }\n"
-            "                    }\n"
-            "                    return (ServerPlayer) c.newInstance(level.getServer(), level, profile, defaultInfo);\n"
-            "                }\n"
+            "        for (java.lang.reflect.Constructor<?> c : ServerPlayer.class.getDeclaredConstructors()) {\n"
+            "            Class<?>[] params = c.getParameterTypes();\n"
+            "            if (params.length == 3\n"
+            "                    && params[1] == ServerLevel.class\n"
+            "                    && params[2] == GameProfile.class) {\n"
+            "                return (ServerPlayer) c.newInstance(level.getServer(), level, profile); // 1.20 / 1.20.1\n"
             "            }\n"
-            "            throw new IllegalStateException(\"No compatible ServerPlayer constructor found\");\n"
-            "        } catch (ReflectiveOperationException e) {\n"
-            "            throw new IllegalStateException(\"Failed to construct turret player (1.20.2+ path)\", e);\n"
+            "            if (params.length == 4\n"
+            "                    && params[1] == ServerLevel.class\n"
+            "                    && params[2] == GameProfile.class) {\n"
+            "                Class<?> clientInfoType = params[3];\n"
+            "                Object defaultInfo = null;\n"
+            "                for (java.lang.reflect.Method m : clientInfoType.getDeclaredMethods()) {\n"
+            "                    if (java.lang.reflect.Modifier.isStatic(m.getModifiers())\n"
+            "                            && m.getParameterCount() == 0\n"
+            "                            && m.getReturnType() == clientInfoType) {\n"
+            "                        defaultInfo = m.invoke(null);\n"
+            "                        break;\n"
+            "                    }\n"
+            "                }\n"
+            "                return (ServerPlayer) c.newInstance(level.getServer(), level, profile, defaultInfo); // 1.20.2+\n"
+            "            }\n"
             "        }\n"
+            "        throw new IllegalStateException(\"No compatible ServerPlayer constructor found\");\n"
+            "    } catch (ReflectiveOperationException e) {\n"
+            "        throw new IllegalStateException(\"Failed to construct turret player (1.20.x path)\", e);\n"
             "    }\n"
             "}\n")
     else:
@@ -400,7 +416,7 @@ def turret_helpers(mcver):
 # import blocks (column-0 -- imports live at the file margin).
 # ---------------------------------------------------------------------------
 
-def logic_imports(mcver):
+def logic_imports(mcver, loader=None):
     """The full import block for TridentKillerLogic.java (between package and the class javadoc).
 
     Common imports are always present; the turret eras add GameProfile / ServerPlayer / EquipmentSlot
@@ -408,7 +424,7 @@ def logic_imports(mcver):
     NOT the reflective 1.20.4 cell). The ThrownTrident import uses the package axis. The credit era
     (26 master) omits all turret imports."""
     v = _parse(mcver)
-    pkg = projectile_package(mcver)
+    pkg = projectile_package(mcver, loader)
     lines = []
     lines.append("import com.kishku7.tridentkillers4java.mixin.LivingEntityAccessor;")
     if has_abstractarrow_invoker(mcver):
@@ -605,10 +621,25 @@ def nbt_load_method(mcver):
 # mixin imports (column-0).
 # ---------------------------------------------------------------------------
 
-def mixin_imports(mcver):
+def mixin_super_ctor(mcver, loader=None):
+    """The ThrownTridentMixin super(...) constructor call. AbstractArrow's (EntityType, Level)
+    2-arg ctor exists on every version EXCEPT 1.20.2 - 1.20.4, where an ItemStack param was
+    added (AbstractArrow(EntityType, Level, ItemStack)); a cell compiling against that era must
+    pass a third 'null' so the mixin's synthetic super-call resolves. Like the package axis, the
+    deciding factor is the COMPILE classpath: NeoForge/Forge 1.20.4 compiles against true 1.20.4
+    (needs the 3-arg), but the Fabric 1.20.4 cell compiles against its floor 1.20.1 (2-arg only;
+    a 3-arg null is AMBIGUOUS there vs (EntityType, LivingEntity, Level) -> Fabric must stay 2-arg).
+    The mixin is never instantiated at runtime, so the null is inert -- it only needs to COMPILE."""
+    v = _parse(mcver)
+    if (1, 20, 2) <= v < (1, 20, 5) and loader != "Fabric":
+        return "super(entityType, level, null);"
+    return "super(entityType, level);"
+
+
+def mixin_imports(mcver, loader=None):
     """The full import block for ThrownTridentMixin.java. The AbstractArrow / ThrownTrident imports
     use the package axis; the NBT imports vary by era. Everything else is invariant."""
-    pkg = projectile_package(mcver)
+    pkg = projectile_package(mcver, loader)
     lines = []
     lines.append("import com.kishku7.tridentkillers4java.TridentKillerLogic;")
     lines.append("import com.kishku7.tridentkillers4java.TridentKillers;")

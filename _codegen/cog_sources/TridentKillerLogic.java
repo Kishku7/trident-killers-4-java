@@ -2,7 +2,7 @@ package com.kishku7.tridentkillers4java;
 
 //[[[cog
 // import cog, compat
-// cog.outl(compat.logic_imports(mcver))
+// cog.outl(compat.logic_imports(mcver, loader))
 //]]]
 //[[[end]]]
 

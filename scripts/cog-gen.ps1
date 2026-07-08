@@ -162,7 +162,7 @@ foreach ($name in $driftMap.Keys) {
 Push-Location $codegen
 try {
     $env:PYTHONPATH = $codegen
-    & cog -r -D "mcver=$McVer" @cogTargets
+    & cog -r -D "mcver=$McVer" -D "loader=$Loader" @cogTargets
     if ($LASTEXITCODE -ne 0) { throw "cog failed (exit $LASTEXITCODE)" }
 } finally {
     Pop-Location

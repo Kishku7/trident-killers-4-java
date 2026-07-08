@@ -2,7 +2,7 @@ package com.kishku7.tridentkillers4java.mixin;
 
 //[[[cog
 // import cog, compat
-// cog.outl(compat.mixin_imports(mcver))
+// cog.outl(compat.mixin_imports(mcver, loader))
 //]]]
 //[[[end]]]
 
@@ -38,7 +38,12 @@ public abstract class ThrownTridentMixin extends AbstractArrow {
     private boolean tk4j$anchorValid = false;
 
     protected ThrownTridentMixin(EntityType<? extends AbstractArrow> entityType, Level level) {
+        //[[[cog
+        // import cog, compat
+        // cog.outl(compat.mixin_super_ctor(mcver, loader))
+        //]]]
         super(entityType, level);
+        //[[[end]]]
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
@@ -131,7 +136,7 @@ public abstract class ThrownTridentMixin extends AbstractArrow {
                     value = "INVOKE",
                     //[[[cog
                     // import cog, compat
-                    // cog.outl('target = "%s"))' % compat.redirect_descriptor(mcver))
+                    // cog.outl('target = "%s"))' % compat.redirect_descriptor(mcver, loader))
                     //]]]
                     //[[[end]]]
     private boolean tk4j$anyPlayerPickup(ThrownTrident self, Entity player) {
