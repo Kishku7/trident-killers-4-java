@@ -1,4 +1,4 @@
-"""ChunkSmith metadata single-source: the canonical issue-tracker URL, stamped into every manifest.
+"""Trident Killers 4 Java metadata single-source: the canonical issue-tracker URL, stamped into every manifest.
 This is THE one place the URL lives. `stamp` writes it into all cell manifests (Fabric contact.issues,
 Forge/NeoForge issueTrackerURL). `check` fails (exit 1) if any manifest disagrees -- run it in the audit
 and before publish so the URL can never drift again.
