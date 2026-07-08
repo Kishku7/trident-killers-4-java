@@ -14,3 +14,8 @@ _release_*/
 # Cog-generated per-cell shared_minecraft source (reproducible via scripts/cog-gen.ps1);
 # never committed. The tracked cog tooling (_codegen/, scripts/cog-gen.ps1) IS committed.
 **/gen/
+
+# Local credential-reading publish/release/stage helpers -- never tracked.
+scripts/_publish_*.py
+scripts/_release_*.py
+scripts/build-stage.ps1
