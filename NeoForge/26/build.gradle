@@ -16,17 +16,20 @@ base { archivesName = 'trident-killers-4-java' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 // Shared MC-coupled core + mixins (single source of truth).
-sourceSets.main.java.srcDir "../shared_minecraft/src/main/java"
-sourceSets.main.resources.srcDir "../shared_minecraft/src/main/resources"
+sourceSets.main.java.srcDir "../../shared_minecraft/src/main/java"
+sourceSets.main.resources.srcDir "../../shared_minecraft/src/main/resources"
 
 neoForge {
     version = project.neo_version
 }
 
-tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.compilerArgs += ['-Xlint:all'] }
 
 processResources {
+    // 26.x resource pack_format > 81 -> range-form min/max REQUIRED (26.1=84, 26.2=88, 26.3=91).
+    def packFormat = (project.findProperty("pack_format") ?: System.getenv("PACK_FORMAT") ?: "88")
     def ep = [mod_version: mod_version, mcRange: project.mc_range, neoforgeRange: project.neoforge_range]
-    inputs.properties(ep)
+    inputs.properties(ep + [packFormat: packFormat])
     filesMatching('META-INF/neoforge.mods.toml') { expand(ep) }
+    filesMatching('pack.mcmeta') { expand(packFormat: packFormat) }
 }

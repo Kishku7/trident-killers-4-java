@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[1,)"
 license="All Rights Reserved"
-issueTrackerURL="https://github.com/Kishku7/trident-killers-4-java/issues"
+issueTrackerURL="https://github.com/Kishku7/mod_support/issues"
 
 [[mods]]
 modId="trident_killers_4_java"
