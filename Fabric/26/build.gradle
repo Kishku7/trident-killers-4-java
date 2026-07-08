@@ -8,8 +8,8 @@ group = project.maven_group
 base { archivesName = project.archives_base_name }
 
 // Shared MC-coupled core + mixins (single source of truth).
-sourceSets.main.java.srcDir "../shared_minecraft/src/main/java"
-sourceSets.main.resources.srcDir "../shared_minecraft/src/main/resources"
+sourceSets.main.java.srcDir "../../shared_minecraft/src/main/java"
+sourceSets.main.resources.srcDir "../../shared_minecraft/src/main/resources"
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -18,13 +18,19 @@ dependencies {
 }
 
 processResources {
-    inputs.properties(["version": project.version, "mcLower": project.mc_lower, "mcUpper": project.mc_upper])
+    // 26.x resource pack_format is > 81 -> range-form min/max REQUIRED. Value injected per 26.X via
+    // -Ppack_format (build-fabric) or PACK_FORMAT env. 26.1=84, 26.2=88, 26.3=91.
+    def packFormat = (project.findProperty("pack_format") ?: System.getenv("PACK_FORMAT") ?: "88")
+    inputs.properties(["version": project.version, "mcLower": project.mc_lower, "mcUpper": project.mc_upper, "packFormat": packFormat])
     filesMatching("fabric.mod.json") {
         expand "version": project.version, "mcLower": project.mc_lower, "mcUpper": project.mc_upper
     }
+    filesMatching("pack.mcmeta") {
+        expand "packFormat": packFormat
+    }
 }
 
-tasks.withType(JavaCompile).configureEach { it.options.encoding = "UTF-8"; it.options.release = 25 }
+tasks.withType(JavaCompile).configureEach { it.options.encoding = "UTF-8"; it.options.release = 25; it.options.compilerArgs += ['-Xlint:all'] }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25

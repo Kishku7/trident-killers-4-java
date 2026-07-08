@@ -4,3 +4,9 @@ out/
 run/
 *.log
 dist/
+
+docs/
+dist/
+**/build/
+**/.gradle/
+_release_*/

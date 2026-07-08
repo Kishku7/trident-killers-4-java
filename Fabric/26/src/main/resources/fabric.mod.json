@@ -8,10 +8,11 @@
     "Kishku7"
   ],
   "contact": {
-    "sources": "https://github.com/Kishku7/trident-killers-4-java"
+    "sources": "https://github.com/Kishku7/trident-killers-4-java",
+    "issues": "https://github.com/Kishku7/mod_support/issues"
   },
   "license": "ARR",
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
     "main": [
       "com.kishku7.tridentkillers4java.TridentKillers"
