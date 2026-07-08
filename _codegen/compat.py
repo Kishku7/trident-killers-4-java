@@ -104,7 +104,7 @@ def compat_level(mcver):
     (Classic-SRG Forge < 1.21.2 also wants JAVA_17; cog-gen handles that Forge override the same
     way Chunksmith does, so this base rule keys purely on the 1.20.* line.)"""
     v = _parse(mcver)
-    if v[0] == 1 and v[1] == 20:
+    if v < (1, 20, 5):
         return "JAVA_17"
     return "JAVA_21"
 

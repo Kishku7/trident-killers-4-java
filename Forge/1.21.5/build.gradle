@@ -1,0 +1,48 @@
+// Trident Killers 4 Java - Forge cell, MC 1.21.5 (single-cross-version-source / Cog model).
+// Forge 1.20.6+ runs official mojmaps at runtime; FG6 skips reobf so no refmap is consulted.
+// Compiles the Cog-generated shared_minecraft output (gen/), NOT shared_minecraft directly.
+// JDK 21. -Xlint:all + zero warnings.
+
+plugins {
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+version = '1.2.6+1.21.5-forge'
+group = 'com.kishku7'
+base { archivesName = 'trident-killers-4-java' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+// Cog-generated shared_minecraft source + resources (produced by cog-gen.ps1 for this MC version).
+sourceSets.main.java.srcDir 'gen/src/main/java'
+sourceSets.main.resources.srcDir 'gen/src/main/resources'
+
+minecraft {
+    mappings channel: 'official', version: '1.21.5'
+    copyIdeResources = true
+}
+
+mixin {
+    add sourceSets.main, 'trident_killers_4_java.refmap.json'
+    config 'trident_killers_4_java.mixins.json'
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.21.5-55.1.10'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xlint:all']
+}
+
+// Forge 1.20.6+ runs mojmap at runtime; FG6 skips reobf so the mixin plugin's
+// manifest wiring does nothing - the MixinConfigs attribute must be explicit.
+jar {
+    manifest {
+        attributes 'MixinConfigs': 'trident_killers_4_java.mixins.json'
+    }
+}
