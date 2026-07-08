@@ -1,5 +1,5 @@
 # build-forge.ps1 -- TK4J Forge builds into dist/.
-# Forge is pre-26 only (classic FG6 is the ceiling; cap 1.21.8, there is NO 26 Forge cell), so every
+# Forge is pre-26 only (FG6 builds through 1.21.11, except 1.21.9 which is gated/locked out; there is NO 26 Forge cell - FG6 cannot build unobf 26.x), so every
 # Forge/<v> cell is cog-gen'd (-Loader Forge) + built. cog_sources is the SOLE source of the drift
 # files. Cells are auto-discovered from Forge/. Lives in scripts/ (run from anywhere).
 #

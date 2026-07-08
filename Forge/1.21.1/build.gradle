@@ -36,7 +36,7 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.compilerArgs += ['-Xlint:all']
+    options.compilerArgs += ['-Xlint:all', '-Xlint:-processing']  // -processing: @Mod (Forge) + @Unique (mixin) are loader/runtime annotations no AP claims; the note is benign
 }
 
 // Forge 1.20.6+ runs official mojmaps at runtime; FG6 skips reobf, and the mixin

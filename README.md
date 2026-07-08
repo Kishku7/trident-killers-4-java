@@ -51,7 +51,7 @@ cell for that loader into `dist/`; pass one or more version labels to build just
     pwsh scripts/build-fabric.ps1 1.21.8 26.1    # a pre-26 cell and a 26 target
     pwsh scripts/build-neoforge.ps1              # all NeoForge cells (1.20.1..1.21.11 + 26.1/26.2)
     pwsh scripts/build-neoforge.ps1 26.2         # one 26-line target
-    pwsh scripts/build-forge.ps1                 # all Forge cells (1.20.1..1.21.8; no 26 - FG6 ceiling)
+    pwsh scripts/build-forge.ps1                 # all Forge cells (1.20.1..1.21.11 except 1.21.9; no 26 - FG6 can't build unobf 26.x)
     pwsh scripts/build-forge.ps1 1.20.1          # one Forge cell
 
 All jars land in `dist/`. Every cell - pre-26 per-version cells AND the unified 26 cells -
@@ -67,15 +67,15 @@ pack_format) from the build script.
 | Fabric   | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.11             | 21  | 8.x    |
 | Fabric   | 26 (26.1.2 / 26.2 / 26.3-snapshot-3)                | 25  | 9.x    |
 | Forge    | 1.20.1                                               | 17  | 8.x    |
-| Forge    | 1.20.6, 1.21.1, 1.21.5, 1.21.8                       | 21  | 8.x    |
+| Forge    | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.10, 1.21.11     | 21  | 8.x    |
 | NeoForge | 1.20.1, 1.20.4                                       | 17  | 8.x    |
 | NeoForge | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.11             | 21  | 8.x    |
 | NeoForge | 26 (26.1.2 / 26.2)                                   | 25  | 9.x    |
 
 Notes:
 
-- **Forge** stops at 1.21.8 here - ForgeGradle 6 is the classic-Forge ceiling and there is no
-  Forge for MC 26.
+- **Forge** builds through 1.21.11 here (FG6). 1.21.9 is skipped (gated / locked out); there is no
+  Forge cell for MC 26 (FG6 cannot build the unobfuscated 26.x, and there is no FG7).
 - **NeoForge 1.20.1** is a Forge-1.20.1 fork (classic SRG runtime): its cell is Cog-generated
   with `-Loader Forge` so the mixin refmap gets the classic-SRG key. Every other NeoForge cell
   uses `-Loader NeoForge`.

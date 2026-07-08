@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[60,)"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/Kishku7/mod_support/issues"
+
+[[mods]]
+modId="trident_killers_4_java"
+version="${file.jarVersion}"
+displayName="Trident Killers 4 Java"
+authors="Kishku7"
+description='''Brings the Bedrock-Edition trident-killer capability to Java Edition. Server-side only.'''
+
+[[dependencies.trident_killers_4_java]]
+    modId="forge"
+    mandatory=true
+    versionRange="[60,)"
+    ordering="NONE"
+    side="SERVER"
+
+[[dependencies.trident_killers_4_java]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.10,1.21.11)"
+    ordering="NONE"
+    side="SERVER"
