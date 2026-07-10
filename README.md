@@ -100,8 +100,8 @@ One source tree, but the loaders reach the compiler four different ways:
 | Directory            | What it is |
 |----------------------|------------|
 | `shared_minecraft/`  | The single source of truth - MC-coupled core + mixins (`TridentKillerLogic`, `LivingEntityAccessor`, `ThrownTridentMixin`), the mixins.json, pack.mcmeta, and the icon asset. The 26 cells srcDir this directly; pre-26 cells receive a Cog-materialised copy. |
-| `Fabric/`, `Forge/`, `NeoForge/` | Per-loader builds; one `<version>` subfolder per pre-26 MC cell, plus the unified `26/` cell (Fabric and NeoForge). Each cell holds only its loader entrypoint + templated manifest. |
-| `_codegen/`          | Cog generator: `compat.py` (the cross-version "era brain") + `cog_sources/` (the Cog-instrumented drift files - the SOLE source of the drifting mixin/logic code). |
+| `Fabric/`, `Forge/`, `NeoForge/` | Per-loader builds; one `<version>` subfolder per pre-26 MC cell, plus the unified `26/` cell (Fabric and NeoForge). Each cell holds only its templated manifest; the loader entrypoint is Cog-generated (see below). |
+| `_codegen/`          | Cog generator: `compat.py` (the cross-version "era brain") + `cog_sources/` (the Cog-instrumented drift files - the SOLE source of the drifting mixin/logic code AND the loader entrypoint `TridentKillers.java`, which `compat.py` emits per loader). |
 | `scripts/`           | The build scripts (`build-<loader>.ps1`), `cog-gen.ps1`, and `_metadata.py` (the issue-URL single-source stamp/check). |
 | `docs/`              | Developer specs (gitignored - not part of any published jar). |
 | `dist/`              | Build output (generated). |

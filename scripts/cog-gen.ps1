@@ -19,8 +19,8 @@
        compatibilityLevel to match the mixin/ files actually present for this version.
 
   The cell's build.gradle srcDirs <Cell>/gen/src/main/{java,resources} (NOT shared_minecraft
-  directly), so it compiles the post-Cog output. 26 cells do NOT run cog-gen (they srcDir
-  shared_minecraft directly).
+  directly), so it compiles the post-Cog output. every cell -- pre-26 AND the unified 26
+  cells -- runs cog-gen and srcDirs gen/ (the 26 line was unified onto cog-gen 2026-07-08).
 
 .PARAMETER Cell
   Path to the cell dir (e.g. Fabric/1.21.8), relative to the repo root or absolute.
@@ -100,6 +100,7 @@ if (Test-Path $sharedRes) {
 $driftMap = [ordered]@{
     'mixin/ThrownTridentMixin.java' = 'com/kishku7/tridentkillers4java/mixin/ThrownTridentMixin.java'
     'TridentKillerLogic.java'       = 'com/kishku7/tridentkillers4java/TridentKillerLogic.java'
+    'TridentKillers.java'           = 'com/kishku7/tridentkillers4java/TridentKillers.java'
 }
 foreach ($name in $driftMap.Keys) {
     $src = Join-Path $cogSrc $name

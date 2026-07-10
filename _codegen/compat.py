@@ -671,6 +671,51 @@ def mixin_imports(mcver, loader=None):
     return "\n".join(lines)
 
 
+def entrypoint_source(loader):
+    """The full TridentKillers.java loader entrypoint, single-sourced (D15).
+
+    The ONLY loader-specific file in the mod: Fabric needs a ModInitializer, Forge/NeoForge need
+    an @Mod class. The @Mod import is net.minecraftforge for Forge AND the NeoForge-1.20.1 fork
+    (cog-gen runs that cell with -Loader Forge), net.neoforged for modern NeoForge. There is no
+    VERSION drift here -- the entrypoint is inert boilerplate -- so this switches on loader only.
+    cog-gen materialises this into every cell's gen/ tree, so within a loader the entrypoint is
+    byte-identical across the whole 1.20 -> 26.3 matrix."""
+    pkg = "package com.kishku7.tridentkillers4java;\n\n"
+    if loader == "Fabric":
+        return (pkg +
+                "import net.fabricmc.api.ModInitializer;\n"
+                "import org.slf4j.Logger;\n"
+                "import org.slf4j.LoggerFactory;\n\n"
+                "/**\n"
+                " * Trident Killers 4 Java - server-side mod entrypoint (Fabric).\n"
+                " * All behaviour lives in mixins; nothing to initialise. Server-side only (FR-13).\n"
+                " */\n"
+                "public class TridentKillers implements ModInitializer {\n\n"
+                "    public static final String MOD_ID = \"trident_killers_4_java\";\n"
+                "    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);\n\n"
+                "    @Override\n"
+                "    public void onInitialize() {\n"
+                "        LOGGER.info(\"Trident Killers 4 Java initialized (server-side).\");\n"
+                "    }\n"
+                "}\n")
+    mod_import = "net.minecraftforge.fml.common.Mod" if loader == "Forge" else "net.neoforged.fml.common.Mod"
+    return (pkg +
+            "import " + mod_import + ";\n"
+            "import org.slf4j.Logger;\n"
+            "import org.slf4j.LoggerFactory;\n\n"
+            "/**\n"
+            " * Trident Killers 4 Java - " + loader + " mod entrypoint.\n"
+            " * All behaviour lives in mixins; nothing to initialise. Server-side only (FR-13).\n"
+            " */\n"
+            "@Mod(TridentKillers.MOD_ID)\n"
+            "public class TridentKillers {\n\n"
+            "    public static final String MOD_ID = \"trident_killers_4_java\";\n"
+            "    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);\n\n"
+            "    public TridentKillers() {\n"
+            "    }\n"
+            "}\n")
+
+
 # ---------------------------------------------------------------------------
 # Self-test
 # ---------------------------------------------------------------------------

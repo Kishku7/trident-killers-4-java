@@ -43,5 +43,5 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.compilerArgs += ['-Xlint:all']
+    options.compilerArgs += ['-Xlint:all', '-Xlint:-processing']  // -processing: @Mod (Forge fork) + @Invoker/@Unique (mixin) are loader/runtime annotations no AP claims; benign note
 }
