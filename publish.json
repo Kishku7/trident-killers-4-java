@@ -1,0 +1,9 @@
+{
+  "modrinth_id": "IX0J3vJn",
+  "slug": "trident-killers-4-java",
+  "jar_prefix": "trident-killers-4-java",
+  "fabric_api_dep": null,
+  "env": "server_only",
+  "quilt_via_fabric_pre26": true,
+  "forge_jar_also_neoforge_below_mc": null
+}
