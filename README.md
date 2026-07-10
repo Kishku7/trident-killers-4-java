@@ -8,19 +8,16 @@ all work, even while you are offline (loot keeps flowing; XP is suppressed). It 
 players are safe in the kill zone, and a trident you never piston-move stays fully vanilla. No carpet
 or datapack tricks - it works at the game level.
 
+Ships as a Fabric, Forge, and NeoForge mod (and runs on Quilt), with no Fabric API dependency.
+
 ## Using it
 
 Install it on the **server** - it does nothing client-side, and vanilla clients can join. Build a
 normal trident killer (throw a trident, push a piston into it) and mobs that enter the locked trident
 die with full player credit. Adds no blocks, items, or commands.
 
-## Supported versions
-
-Minecraft **1.20 through 26.3** - Fabric and Quilt across the whole range, NeoForge on 1.20.1-1.21.11 plus 26.1/26.2, and Forge on 1.20-1.21.11 (no Fabric API dependency; on Modrinth, pick the file matching your version and loader).
-
 ## Links
 
-- **Download:** https://modrinth.com/mod/trident-killers-4-java
 - **Source:** the [`minecraft-1.20-26.3`](https://github.com/Kishku7/trident-killers-4-java/tree/minecraft-1.20-26.3) branch
 - **Issues:** https://github.com/Kishku7/mod_support/issues
 
