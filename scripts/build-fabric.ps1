@@ -11,13 +11,13 @@ $dist   = Join-Path $repo "dist"
 $cogGen = Join-Path $PSScriptRoot "cog-gen.ps1"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
-# 26 matrix. pack_format per Memory/knowledge/pack-formats.md (26.1=84, 26.2=88, 26.3=91).
-# 26.3 pinned to snapshot-3 EXCLUSIVELY: dep uses the Fabric-normalized alpha form (26.3-alpha.3),
-# not the raw snapshot id (loader rejects the raw id). TK4J has NO fabric-api runtime dep (compileOnly only).
+# 26 matrix. pack_format per Memory/knowledge/pack-formats.md (26.1=84, 26.2=88, 26.3=92).
+# 26.3 pinned to snapshot-4 EXCLUSIVELY: dep uses the Fabric-normalized alpha form (26.3-alpha.4),
+# not the raw snapshot id (loader rejects the raw id). snap-4 = alpha.4, pack_format 92. TK4J has NO fabric-api runtime dep (compileOnly only).
 $m26 = [ordered]@{
   "26.1" = @{ mc="26.1.2";          api="0.145.3+26.1.1"; loader="0.18.6"; lo="26.1-";        hi="26.2";          pf="84" }
   "26.2" = @{ mc="26.2";            api="0.152.1+26.2";   loader="0.19.3"; lo="26.2-";        hi="26.3";          pf="88" }
-  "26.3" = @{ mc="26.3-snapshot-3"; api="0.154.3+26.3";   loader="0.19.3"; lo="26.3-alpha.3"; hi="26.3-alpha.4";  pf="91" }
+  "26.3" = @{ mc="26.3-snapshot-4"; api="0.155.1+26.3";   loader="0.19.3"; lo="26.3-alpha.4"; hi="26.3-alpha.5";  pf="92" }
 }
 # Auto-discover pre-26 cells from the dirs (everything under Fabric/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory -EA SilentlyContinue | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)

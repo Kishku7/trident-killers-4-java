@@ -23,7 +23,7 @@ dependencies {
 
 processResources {
     // 26.x resource pack_format is > 81 -> range-form min/max REQUIRED. Value injected per 26.X via
-    // -Ppack_format (build-fabric) or PACK_FORMAT env. 26.1=84, 26.2=88, 26.3=91.
+    // -Ppack_format (build-fabric) or PACK_FORMAT env. 26.1=84, 26.2=88, 26.3=92.
     def packFormat = (project.findProperty("pack_format") ?: System.getenv("PACK_FORMAT") ?: "88")
     inputs.properties(["version": project.version, "mcLower": project.mc_lower, "mcUpper": project.mc_upper, "packFormat": packFormat])
     filesMatching("fabric.mod.json") {

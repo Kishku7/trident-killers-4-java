@@ -3,12 +3,12 @@
   Trident Killers 4 Java Cog code-generation driver for one pre-26 cell.
 
 .DESCRIPTION
-  Materialises a per-cell, per-MC-version copy of the shared_minecraft source (the 26 master)
+  Materialises a per-cell, per-MC-version copy of the cog_sources/shared invariant tree
   under <Cell>/gen/, with all version drift resolved by Cog (direct-compile, driven by
   _codegen/compat.py). Steps:
 
     1. Wipe + recreate <Cell>/gen/ (it is a build artifact, never committed).
-    2. Copy shared_minecraft/src/main/java + resources -> <Cell>/gen/ verbatim.
+    2. Copy _codegen/cog_sources/shared/src/main/java + resources -> <Cell>/gen/ verbatim.
     3. Overwrite the drifting files with the Cog-instrumented copies from _codegen/cog_sources/.
     4. Add the presence-gated shims for this MC version:
          - mixin/AbstractArrowInvoker : 1.20.x only (has_abstractarrow_invoker)
@@ -18,7 +18,7 @@
     6. Regenerate <Cell>/gen/src/main/resources/trident_killers_4_java.mixins.json's mixins[] +
        compatibilityLevel to match the mixin/ files actually present for this version.
 
-  The cell's build.gradle srcDirs <Cell>/gen/src/main/{java,resources} (NOT shared_minecraft
+  The cell's build.gradle srcDirs <Cell>/gen/src/main/{java,resources} (NOT cog_sources/shared
   directly), so it compiles the post-Cog output. every cell -- pre-26 AND the unified 26
   cells -- runs cog-gen and srcDirs gen/ (the 26 line was unified onto cog-gen 2026-07-08).
 
@@ -62,9 +62,9 @@ if (-not $Loader) {
     if ($leadSeg -in @('Fabric','NeoForge','Forge')) { $Loader = $leadSeg } else { $Loader = 'Fabric' }
 }
 
-$sharedJava = Join-Path $repoRoot 'shared_minecraft/src/main/java'
-$sharedRes  = Join-Path $repoRoot 'shared_minecraft/src/main/resources'
-if (-not (Test-Path $sharedJava)) { throw "shared_minecraft java not found: $sharedJava" }
+$sharedJava = Join-Path $cogSrc 'shared/src/main/java'
+$sharedRes  = Join-Path $cogSrc 'shared/src/main/resources'
+if (-not (Test-Path $sharedJava)) { throw "cog_sources/shared java not found: $sharedJava" }
 
 $genDir     = Join-Path $cellPath 'gen'
 $genJava    = Join-Path $genDir 'src/main/java'
@@ -79,12 +79,12 @@ if (Test-Path $genDir) { Remove-Item -Recurse -Force $genDir }
 New-Item -ItemType Directory -Force -Path $genJava | Out-Null
 New-Item -ItemType Directory -Force -Path $genRes  | Out-Null
 
-# --- Step 2: copy shared_minecraft java + resources verbatim ---
+# --- Step 2: copy cog_sources/shared invariant java + resources verbatim ---
 Copy-Item -Recurse -Force (Join-Path $sharedJava '*') $genJava
 # pack.mcmeta handling by version line:
 #   pre-26 cells own their own per-version pack.mcmeta (cell src/main/resources) -> SKIP the shared
 #     one here (the shared copy is the 26 range-form; copying it would duplicate/conflict).
-#   26 cells do NOT own a pack.mcmeta (they used to srcDir shared_minecraft directly) -> COPY the
+#   26 cells do NOT own a pack.mcmeta (they used to srcDir the shared tree directly) -> COPY the
 #     shared range-form template into gen/ so it lands in the compiled resources; the 26 cell's
 #     processResources still expands ${packFormat}.
 Push-Location $codegen
