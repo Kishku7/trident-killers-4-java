@@ -3,6 +3,10 @@
 All notable changes to Trident Killers 4 Java are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.10] - 2026-07-21
+### Changed
+- MC 26.3 Fabric build advanced from 26.3-snapshot-4 to 26.3-snapshot-5 (Fabric API 0.155.3+26.3, pack_format 93, dep 26.3-alpha.5). Loads and renders in-world on the snapshot's reworked GPU/shader pipeline with no source changes; verified on the headless client harness.
+
 ## [1.2.9] - 2026-07-08
 Consolidation release. Unifies the entire 1.20 through 26.3 matrix onto one single-source
 (Cog) tree and brings every loader and line to a single version. Adds Forge 1.21.10 and
