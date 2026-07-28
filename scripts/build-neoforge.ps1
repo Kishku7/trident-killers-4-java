@@ -22,8 +22,8 @@ New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
 # 26-line matrix (unified NeoForge/26 cell; -P + pack_format). pack_format per Memory/knowledge/pack-formats.md.
 $m26 = [ordered]@{
-  "26.1" = @{ mc="26.1.2"; nf="26.1.0.15-beta"; nfRange="[26.1.0.0-beta,)"; mcRange="[26.1,26.2)"; pf="84" }
-  "26.2" = @{ mc="26.2";   nf="26.2.0.1-beta";  nfRange="[26.2.0-alpha,)"; mcRange="[26.2,26.3)"; pf="88" }
+  "26.1" = @{ mc="26.1.2"; nf="26.1.2.87"; nfRange="[26.1.0.0-beta,)"; mcRange="[26.1,26.2)"; pf="84" }
+  "26.2" = @{ mc="26.2";   nf="26.2.0.35-beta";  nfRange="[26.2.0-alpha,)"; mcRange="[26.2,26.3)"; pf="88" }
 }
 # Auto-discover pre-26 cells (everything under NeoForge/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)
