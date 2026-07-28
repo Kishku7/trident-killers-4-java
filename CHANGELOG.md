@@ -3,6 +3,20 @@
 All notable changes to Trident Killers 4 Java are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.2.12] - 2026-07-28
+
+### Changed
+- **Fabric 26.3 cell moved to MC 26.3-snapshot-6** (from snapshot-5): fabric-api
+  `0.155.3+26.3` -> `0.156.1+26.3`, `pack_format` `93` -> `94`, exclusive window
+  `[26.3-alpha.5, 26.3-alpha.6)` -> `[26.3-alpha.6, 26.3-alpha.7)`.
+
+### Notes
+- **No source change required.** The whole tree was scanned against every snapshot-6 breaking
+  surface (worldgen noise overhaul, Entity invulnerability split, `startSleeping` void ->
+  boolean, `SharedSuggestionProvider` filter parameter, `InputWithModifiers.getDigit()`
+  removal, options-screen reshuffle, terrain multidraw path, block-entity loot helpers) with
+  zero hits.
+
 ## [1.2.11] - 2026-07-27
 ### Changed
 - NeoForge 26 cells rebuilt against the now-PUBLISHED NeoForge builds: 26.1 -> 26.1.2.87, 26.2 -> 26.2.0.35-beta (previously 26.1.0.15-beta / 26.2.0.1-beta - the 26.1 pin was the stalest in the matrix). Dependency ranges and pack_format unchanged.

@@ -17,7 +17,7 @@ New-Item -ItemType Directory -Force -Path $dist | Out-Null
 $m26 = [ordered]@{
   "26.1" = @{ mc="26.1.2";          api="0.145.3+26.1.1"; loader="0.18.6"; lo="26.1-";        hi="26.2";          pf="84" }
   "26.2" = @{ mc="26.2";            api="0.152.1+26.2";   loader="0.19.3"; lo="26.2-";        hi="26.3";          pf="88" }
-  "26.3" = @{ mc="26.3-snapshot-5"; api="0.155.3+26.3";   loader="0.19.3"; lo="26.3-alpha.5"; hi="26.3-alpha.6";  pf="93" }
+  "26.3" = @{ mc="26.3-snapshot-6"; api="0.156.1+26.3";   loader="0.19.3"; lo="26.3-alpha.6"; hi="26.3-alpha.7";  pf="94" }
 }
 # Auto-discover pre-26 cells from the dirs (everything under Fabric/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory -EA SilentlyContinue | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)
