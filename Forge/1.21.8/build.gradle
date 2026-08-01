@@ -9,7 +9,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = '1.2.9+1.21.8-forge'
+version = '1.2.13+1.21.8-forge'
 group = 'com.kishku7'
 base { archivesName = 'trident-killers-4-java' }
 
@@ -41,8 +41,17 @@ tasks.withType(JavaCompile).configureEach {
 
 // Forge 1.20.6+ runs mojmap at runtime; FG6 skips reobf so the mixin plugin's
 // manifest wiring does nothing - the MixinConfigs attribute must be explicit.
+// D12: FML resolves mods.toml's ${file.jarVersion} from the jar manifest's Implementation-Version.
+// Without it the mod reports "0.0NONE" in the mod list and in every log line (caught 2026-08-01).
+// The loader suffix is a FILENAME convention, not part of the mod version, so it is stripped here.
+def displayVersion = project.version.toString().replaceAll(/-(forge|neoforge)$/, '')
 jar {
     manifest {
-        attributes 'MixinConfigs': 'trident_killers_4_java.mixins.json'
+        attributes([
+            'MixinConfigs'          : 'trident_killers_4_java.mixins.json',
+            'Implementation-Title'  : 'Trident Killers 4 Java',
+            'Implementation-Version': displayVersion,
+            'Implementation-Vendor' : 'Kishku7'
+        ])
     }
 }

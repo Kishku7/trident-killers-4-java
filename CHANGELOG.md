@@ -3,7 +3,10 @@
 All notable changes to Trident Killers 4 Java are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] - 2026-08-01 audit
+## [1.2.13] - 2026-08-01
+
+### Changed
+- **Every jar is now 1.2.13**, replacing the mixed 1.2.9 / 1.2.11 / 1.2.12 state across the matrix.
 
 ### Fixed
 - **Claim ranges now match the loader gates.** Every pre-26 Forge and NeoForge jar declared an MC
@@ -16,6 +19,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   warning and the dropped resource pack.
 - **AbstractArrow constructor era boundary** in the code generator was off by one version: the
   ItemStack parameter arrives at MC 1.20.3, not 1.20.2.
+- **Forge and NeoForge jars reported their version as `0.0NONE`.** Those manifests ask the loader to
+  read the version from the jar (`${file.jarVersion}`), but the jar never carried an
+  `Implementation-Version` attribute, so the mod list and every log line showed `0.0NONE`. All 24
+  loader jars now carry the real version.
 
 ### Added
 - **Ten new build targets**: Forge 1.20.2 and 1.20.4; NeoForge 1.21, 1.21.2, 1.21.3, 1.21.4, 1.21.6,
