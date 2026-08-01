@@ -16,13 +16,13 @@ config="trident_killers_4_java.mixins.json"
 [[dependencies.trident_killers_4_java]]
     modId="neoforge"
     type="required"
-    versionRange="[21.5,)"
+    versionRange="[21.5,21.6)"
     ordering="NONE"
     side="SERVER"
 
 [[dependencies.trident_killers_4_java]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.2,1.21.6)"
+    versionRange="[1.21.5,1.21.6)"
     ordering="NONE"
     side="SERVER"
