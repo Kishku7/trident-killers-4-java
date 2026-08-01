@@ -65,21 +65,27 @@ pack_format) from the build script.
 |----------|------------------------------------------------------|-----|--------|
 | Fabric   | 1.20.4                                               | 17  | 8.x    |
 | Fabric   | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.11             | 21  | 8.x    |
-| Fabric   | 26 (26.1.2 / 26.2 / 26.3-snapshot-3)                | 25  | 9.x    |
-| Forge    | 1.20.1                                               | 17  | 8.x    |
+| Fabric   | 26 (26.1.2 / 26.2 / 26.3-snapshot-6)                | 25  | 9.x    |
+| Forge    | 1.20.1, 1.20.2, 1.20.4                               | 17  | 8.x    |
 | Forge    | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.10, 1.21.11     | 21  | 8.x    |
 | NeoForge | 1.20.1, 1.20.4                                       | 17  | 8.x    |
-| NeoForge | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.11             | 21  | 8.x    |
+| NeoForge | 1.20.6, 1.21, 1.21.1, 1.21.2, 1.21.3, 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, 1.21.9, 1.21.10, 1.21.11 | 21 | 8.x |
 | NeoForge | 26 (26.1.2 / 26.2)                                   | 25  | 9.x    |
 
 Notes:
 
-- **Forge** builds through 1.21.11 here (FG6). 1.21.9 is skipped (gated / locked out); there is no
-  Forge cell for MC 26 (FG6 cannot build the unobfuscated 26.x, and there is no FG7).
+- **Forge** builds through 1.21.11 here (FG6). There is no Forge cell for MC 26 (FG6 cannot build
+  the unobfuscated 26.x, and there is no FG7). Forge cells that do not exist, and why: **1.20** and
+  **1.21**, **1.21.3**, **1.21.4**, **1.21.6**, **1.21.7** (Forge majors 46/51/53/54/56/57 lack APIs
+  this toolchain needs), **1.20.3** (its installer yields a shim with no launcher), **1.20.5** and
+  **1.21.2** (Forge never shipped those), **1.21.9** (gated / locked out).
+- **NeoForge** covers every MC from 1.20.1 up, except **1.20.2** and **1.20.3** (those NeoForge
+  series build only under NeoGradle, which this tree does not use) and **1.20.5** (loader is
+  20.5.x-beta only).
 - **NeoForge 1.20.1** is a Forge-1.20.1 fork (classic SRG runtime): its cell is Cog-generated
   with `-Loader Forge` so the mixin refmap gets the classic-SRG key. Every other NeoForge cell
   uses `-Loader NeoForge`.
-- **MC 26.3** has a Fabric build (pinned to `26.3-snapshot-3`) but no NeoForge or Forge yet -
+- **MC 26.3** has a Fabric build (pinned to `26.3-snapshot-6`) but no NeoForge or Forge yet -
   NeoForge has not shipped for 26.3 and there is no Forge for MC 26.
 
 ## The four build regimes
@@ -92,14 +98,14 @@ One source tree, but the loaders reach the compiler four different ways:
    cell driven by the `-P` version matrix.
 3. **Forge (FG6) and the NeoForge-1.20.1 fork** - ForgeGradle 6 on JDK 17/21; the classic-SRG
    runtime, so those cells Cog-generate against direct compiled access (`-Loader Forge`).
-4. **Modern NeoForge (`net.neoforged.moddev`)** - ModDevGradle for 1.20.4..1.21.11 and the
+4. **Modern NeoForge (`net.neoforged.moddev`)** - ModDevGradle for 1.20.4..1.21.11 (every MC in that span except 1.20.5) and the
    unified `NeoForge/26` cell.
 
 ## Repository layout
 
 | Directory            | What it is |
 |----------------------|------------|
-| `shared_minecraft/`  | The single source of truth - MC-coupled core + mixins (`TridentKillerLogic`, `LivingEntityAccessor`, `ThrownTridentMixin`), the mixins.json, pack.mcmeta, and the icon asset. The 26 cells srcDir this directly; pre-26 cells receive a Cog-materialised copy. |
+| `_codegen/cog_sources/` | The single source of truth - the drifting files (`ThrownTridentMixin`, `TridentKillerLogic`, the loader entrypoint) plus the invariant `shared/` tree (`LivingEntityAccessor`, the icon asset). Every cell - pre-26 and 26 - builds from a Cog-materialised copy in its own `gen/`. (The old `shared_minecraft/` tree was eliminated 2026-07-17.) |
 | `Fabric/`, `Forge/`, `NeoForge/` | Per-loader builds; one `<version>` subfolder per pre-26 MC cell, plus the unified `26/` cell (Fabric and NeoForge). Each cell holds only its templated manifest; the loader entrypoint is Cog-generated (see below). |
 | `_codegen/`          | Cog generator: `compat.py` (the cross-version "era brain") + `cog_sources/` (the Cog-instrumented drift files - the SOLE source of the drifting mixin/logic code AND the loader entrypoint `TridentKillers.java`, which `compat.py` emits per loader). |
 | `scripts/`           | The build scripts (`build-<loader>.ps1`), `cog-gen.ps1`, and `_metadata.py` (the issue-URL single-source stamp/check). |

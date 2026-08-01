@@ -1,0 +1,40 @@
+// Trident Killers 4 Java - Forge cell, MC 1.20.1 (single-cross-version-source / Cog model).
+// Classic-SRG Forge (FG6): runs SRG-mapped at runtime, so the mixin config needs a refmap.
+// Compiles the Cog-generated shared_minecraft output (gen/), NOT shared_minecraft directly.
+// JDK 17 (Forge 47 bundles Mixin 0.8.5 -> JAVA_17). -Xlint:all + zero warnings.
+
+plugins {
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+version = '1.2.9+1.20.2-forge'
+group = 'com.kishku7'
+base { archivesName = 'trident-killers-4-java' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+// Cog-generated shared_minecraft source + resources (produced by cog-gen.ps1 for this MC version).
+sourceSets.main.java.srcDir 'gen/src/main/java'
+sourceSets.main.resources.srcDir 'gen/src/main/resources'
+
+minecraft {
+    mappings channel: 'official', version: '1.20.2'
+    copyIdeResources = true
+}
+
+mixin {
+    add sourceSets.main, 'trident_killers_4_java.refmap.json'
+    config 'trident_killers_4_java.mixins.json'
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.2-48.1.0'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xlint:all', '-Xlint:-processing']  // -processing: @Mod (Forge) + @Unique (mixin) are loader/runtime annotations no AP claims; the note is benign
+}

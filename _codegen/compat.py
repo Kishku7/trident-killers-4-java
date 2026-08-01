@@ -626,15 +626,18 @@ def nbt_load_method(mcver):
 
 def mixin_super_ctor(mcver, loader=None):
     """The ThrownTridentMixin super(...) constructor call. AbstractArrow's (EntityType, Level)
-    2-arg ctor exists on every version EXCEPT 1.20.2 - 1.20.4, where an ItemStack param was
+    2-arg ctor exists on every version EXCEPT 1.20.3 - 1.20.4, where an ItemStack param was
     added (AbstractArrow(EntityType, Level, ItemStack)); a cell compiling against that era must
-    pass a third 'null' so the mixin's synthetic super-call resolves. Like the package axis, the
+    pass a third 'null' so the mixin's synthetic super-call resolves. BOUNDARY CORRECTED
+    2026-08-01 (was 1.20.2): MC 1.20.2 does NOT have the ItemStack ctor -- a 3-arg null there
+    binds to (EntityType, LivingEntity, Level) and fails with "Level cannot be converted to
+    LivingEntity". Proven by the Forge/1.20.2 backfill cell. Like the package axis, the
     deciding factor is the COMPILE classpath: NeoForge/Forge 1.20.4 compiles against true 1.20.4
     (needs the 3-arg), but the Fabric 1.20.4 cell compiles against its floor 1.20.1 (2-arg only;
     a 3-arg null is AMBIGUOUS there vs (EntityType, LivingEntity, Level) -> Fabric must stay 2-arg).
     The mixin is never instantiated at runtime, so the null is inert -- it only needs to COMPILE."""
     v = _parse(mcver)
-    if (1, 20, 2) <= v < (1, 20, 5) and loader != "Fabric":
+    if (1, 20, 3) <= v < (1, 20, 5) and loader != "Fabric":
         return "super(entityType, level, null);"
     return "super(entityType, level);"
 

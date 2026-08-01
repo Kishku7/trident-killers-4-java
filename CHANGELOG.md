@@ -3,6 +3,24 @@
 All notable changes to Trident Killers 4 Java are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased] - 2026-08-01 audit
+
+### Fixed
+- **Claim ranges now match the loader gates.** Every pre-26 Forge and NeoForge jar declared an MC
+  range whose oldest versions its own loader floor refused, so those versions could never load.
+  Each range now starts at the first version the jar's loader actually admits, and the open-ended
+  NeoForge dependency ranges are closed to the cell's own series.
+- **pack.mcmeta on MC 1.21.9-1.21.11.** The Fabric and NeoForge jars for that span no longer ship a
+  pack.mcmeta at all (both loaders generate correct metadata themselves); the Forge jars declare the
+  exact data-pack format (1.21.10 -> 88, 1.21.11 -> 94). Removes the "couldn't load pack metadata"
+  warning and the dropped resource pack.
+- **AbstractArrow constructor era boundary** in the code generator was off by one version: the
+  ItemStack parameter arrives at MC 1.20.3, not 1.20.2.
+
+### Added
+- **Ten new build targets**: Forge 1.20.2 and 1.20.4; NeoForge 1.21, 1.21.2, 1.21.3, 1.21.4, 1.21.6,
+  1.21.7, 1.21.9 and 1.21.10. Every one boots on a dedicated server.
+
 ## [1.2.12] - 2026-07-28
 
 ### Changed

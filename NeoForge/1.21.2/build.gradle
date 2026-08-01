@@ -1,0 +1,27 @@
+// Trident Killers 4 Java - NeoForge cell, MC 1.21.5 (single-cross-version-source / Cog model).
+// Modern ModDevGradle (neoforge.mods.toml + [[mixins]]). Compiles the Cog-generated
+// shared_minecraft output (gen/), NOT shared_minecraft directly. JDK 21. -Xlint:all + zero warnings.
+
+plugins {
+    id 'eclipse'
+    id 'net.neoforged.moddev' version '2.0.141'
+}
+
+version = '1.2.9+1.21.2-neoforge'
+group = 'com.kishku7'
+base { archivesName = 'trident-killers-4-java' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+// Cog-generated shared_minecraft source + resources (produced by cog-gen.ps1 for this MC version).
+sourceSets.main.java.srcDir 'gen/src/main/java'
+sourceSets.main.resources.srcDir 'gen/src/main/resources'
+
+neoForge {
+    version = '21.2.1-beta'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xlint:all']
+}
