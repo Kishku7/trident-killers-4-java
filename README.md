@@ -65,7 +65,7 @@ pack_format) from the build script.
 |----------|------------------------------------------------------|-----|--------|
 | Fabric   | 1.20.4                                               | 17  | 8.x    |
 | Fabric   | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.11             | 21  | 8.x    |
-| Fabric   | 26 (26.1.2 / 26.2 / 26.3-snapshot-6)                | 25  | 9.x    |
+| Fabric   | 26 (26.1.2 / 26.2 / 26.3-snapshot-7)                | 25  | 9.x    |
 | Forge    | 1.20.1, 1.20.2, 1.20.4                               | 17  | 8.x    |
 | Forge    | 1.20.6, 1.21.1, 1.21.5, 1.21.8, 1.21.10, 1.21.11     | 21  | 8.x    |
 | NeoForge | 1.20.1, 1.20.4                                       | 17  | 8.x    |
@@ -85,7 +85,7 @@ Notes:
 - **NeoForge 1.20.1** is a Forge-1.20.1 fork (classic SRG runtime): its cell is Cog-generated
   with `-Loader Forge` so the mixin refmap gets the classic-SRG key. Every other NeoForge cell
   uses `-Loader NeoForge`.
-- **MC 26.3** has a Fabric build (pinned to `26.3-snapshot-6`) but no NeoForge or Forge yet -
+- **MC 26.3** has a Fabric build (pinned to `26.3-snapshot-7`) but no NeoForge or Forge yet -
   NeoForge has not shipped for 26.3 and there is no Forge for MC 26.
 
 ## The four build regimes
