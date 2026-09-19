@@ -11,13 +11,18 @@ $dist   = Join-Path $repo "dist"
 $cogGen = Join-Path $PSScriptRoot "cog-gen.ps1"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
-# 26 matrix. pack_format per Memory/knowledge/pack-formats.md (26.1=84, 26.2=88, 26.3=92).
-# 26.3 pinned to snapshot-4 EXCLUSIVELY: dep uses the Fabric-normalized alpha form (26.3-alpha.4),
-# not the raw snapshot id (loader rejects the raw id). snap-4 = alpha.4, pack_format 92. TK4J has NO fabric-api runtime dep (compileOnly only).
+# 26 matrix. pack_format is READ from each MC build's own resources/version.json (26.1=84, 26.2=88, 26.3=97).
+# 26.3 went STABLE 2026-09-15, so its snapshot-exclusive window is gone and it takes the ordinary
+# closed prerelease-inclusive range. pack_format 97 is READ from 26.3's own resources/version.json:
+# the ladder ran 89,90,91,92,93,94,95 across the snapshots and then jumped TWO to 97 at pre-1, so it
+# is never extrapolated. Historical note, kept because it is the trap: while a 26.3 build was still
+# a prerelease the dep had to use the Fabric-normalized form -- 26.3-alpha.N for snapshots, 26.3-pre.N
+# for pre-releases (NOT beta.N) -- because the loader rejects the raw snapshot id.
+# TK4J has NO fabric-api runtime dep (compileOnly only).
 $m26 = [ordered]@{
   "26.1" = @{ mc="26.1.2";          api="0.145.3+26.1.1"; loader="0.18.6"; lo="26.1-";        hi="26.2";          pf="84" }
   "26.2" = @{ mc="26.2";            api="0.152.1+26.2";   loader="0.19.3"; lo="26.2-";        hi="26.3";          pf="88" }
-  "26.3" = @{ mc="26.3-snapshot-7"; api="0.156.2+26.3";   loader="0.19.3"; lo="26.3-alpha.7"; hi="26.3-alpha.8";  pf="95" }
+  "26.3" = @{ mc="26.3";            api="0.161.0+26.3";   loader="0.19.5"; lo="26.3-";        hi="26.4";          pf="97" }
 }
 # Auto-discover pre-26 cells from the dirs (everything under Fabric/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory -EA SilentlyContinue | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)

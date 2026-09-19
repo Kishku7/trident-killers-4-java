@@ -3,6 +3,35 @@
 All notable changes to Trident Killers 4 Java are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.3.0] - 2026-09-18
+
+### Added
+- **NeoForge support on MC 26.3.** The 26 NeoForge matrix stopped at 26.2 under a "no NeoForge
+  upstream yet" note that is no longer true -- and was never the real obstacle. NeoForge ships 26.3
+  betas (now `26.3.0.6-beta`); what failed was ModDevGradle. On 2.0.141 the NFRT
+  `:createMinecraftArtifacts` recompile dies inside Minecraft's own source (NeoForge's access
+  transformer widens `HolderSet.Named.contents()` to public and the widening is not propagated to the
+  anonymous subclass `HolderSet.emptyNamed` returns), before a line of mod source is compiled.
+  MDG 2.0.147 builds the identical cell clean.
+
+### Changed
+- **26.3 cell moved from MC 26.3-snapshot-7 to MC 26.3 (stable, 2026-09-15).** The snapshot-exclusive
+  single-build pin is replaced by the ordinary closed prerelease-inclusive range `>=26.3- <26.4`
+  (Fabric) / `[26.3,26.4)` (NeoForge). Resource `pack_format` `95` -> `97`, read from 26.3's own
+  `resources/version.json` -- the ladder ran 89..95 across the snapshots then jumped TWO to 97 at
+  pre-1, so it is read and never extrapolated.
+- fabric-api `0.156.2+26.3` -> `0.161.0+26.3`, fabric-loader `0.19.3` -> `0.19.5`,
+  NeoForge `26.3.0.6-beta`, ModDevGradle `2.0.147`.
+
+### Notes
+- **No source change required.** The 26.3 gates that land after snapshot-7 were checked against this
+  mod and none are touched: the pre-1 worldgen / `ChunkStatus` merge, `RegionFileStorage`,
+  `getStructureManager` -> `getStructureTemplateManager`, the renamed explorer-map ids, the pre-2
+  `tickChunks` change, and the rc-1 `blockUsingItem` / `blockedByItem` and `LevelExtractor` changes.
+  TK4J is server-only and its only `CommandSourceStack` use is as a type parameter, never a
+  construction, so the pre-1 constructor argument drop does not reach it.
+- Only the 26.3 cells were rebuilt; every other cell keeps the version it already shipped.
+
 ## [1.2.14] - 2026-08-05
 
 ### Changed

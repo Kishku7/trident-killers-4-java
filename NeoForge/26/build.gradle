@@ -1,6 +1,10 @@
 plugins {
     id 'eclipse'
-    id 'net.neoforged.moddev' version '2.0.141'
+    // 2.0.147 is a FLOOR, not a cosmetic bump: on 2.0.141 the NFRT :createMinecraftArtifacts recompile
+    // dies inside Minecraft's OWN source for MC 26.3 (NeoForge's access transformer widens
+    // HolderSet.Named.contents() to public and the widening is not propagated to the anonymous
+    // subclass HolderSet.emptyNamed returns), before a line of mod source is compiled.
+    id 'net.neoforged.moddev' version '2.0.147'
 }
 
 repositories {

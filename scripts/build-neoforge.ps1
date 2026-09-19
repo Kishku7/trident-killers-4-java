@@ -1,7 +1,7 @@
 # build-neoforge.ps1 -- TK4J NeoForge builds into dist/.
 # Covers BOTH the pre-26 per-version cells (NeoForge/<v>, cog-gen + gradlew) AND the unified 26 line
-# (NeoForge/26, -P matrix + pack_format range-form). MC 26.3 has NO NeoForge upstream yet, so the 26
-# line is 26.1/26.2 only. cog_sources is the SOLE source of the drift files -- every cell (incl. the
+# (NeoForge/26, -P matrix + pack_format range-form). The 26 line covers 26.1/26.2/26.3.
+# cog_sources is the SOLE source of the drift files -- every cell (incl. the
 # 26 cell, now cog-driven) runs cog-gen before gradlew. Pre-26 cells auto-discovered. Lives in scripts/.
 #
 # NeoForge/1.20.1 is a Forge-1.20.1 fork (SRG runtime): cog-gen uses -Loader Forge there so the
@@ -20,10 +20,16 @@ $dist   = Join-Path $repo "dist"
 $cogGen = Join-Path $PSScriptRoot "cog-gen.ps1"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
-# 26-line matrix (unified NeoForge/26 cell; -P + pack_format). pack_format per Memory/knowledge/pack-formats.md.
+# 26-line matrix (unified NeoForge/26 cell; -P + pack_format). pack_format is READ from each MC build's own resources/version.json.
 $m26 = [ordered]@{
   "26.1" = @{ mc="26.1.2"; nf="26.1.2.87"; nfRange="[26.1.0.0-beta,)"; mcRange="[26.1,26.2)"; pf="84" }
   "26.2" = @{ mc="26.2";   nf="26.2.0.35-beta";  nfRange="[26.2.0-alpha,)"; mcRange="[26.2,26.3)"; pf="88" }
+  # 26.3 NeoForge EXISTS (26.3.0.6-beta). The blocker was never the loader but ModDevGradle: on 2.0.141
+  # the NFRT :createMinecraftArtifacts recompile fails inside Minecraft's OWN source (NeoForge's access
+  # transformer widens HolderSet.Named.contents() to public and the widening is not propagated to the
+  # anonymous subclass HolderSet.emptyNamed returns), before any mod source is compiled. MDG 2.0.147
+  # builds it clean -- bumped in NeoForge/26/build.gradle.
+  "26.3" = @{ mc="26.3";   nf="26.3.0.6-beta";   nfRange="[26.3.0-alpha,)"; mcRange="[26.3,26.4)"; pf="97" }
 }
 # Auto-discover pre-26 cells (everything under NeoForge/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)
