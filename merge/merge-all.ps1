@@ -1,6 +1,6 @@
 $work = '<WORKSPACE>\Minecraft\mods\tk4j-merged'
 $stage = '<WORKSPACE>\Minecraft\mods\trident-killers-4-java'
-$java = 'C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\java.exe'
+$java = (Join-Path ((Get-ChildItem 'C:\Program Files\Eclipse Adoptium' -Directory -Filter 'jdk-25.*' | Sort-Object { [version]($_.Name -replace '^jdk-|-hotspot$','') } -Descending | Select-Object -First 1).FullName) 'bin\java.exe')
 $forgix = '<WORKSPACE>\Minecraft\mods\Forgix\build\libs\Forgix-2.0.0-SNAPSHOT.5.1.jar'
 $log = "$work\merge-all.log"
 "=== MERGE ALL FAMILIES $(Get-Date) ===" | Out-File $log -Encoding utf8

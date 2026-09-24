@@ -10,13 +10,24 @@ Legacy is detected by the neoforge version starting with "1.20.1-" or "47.".
 """
 import json, os, shutil, socket, struct, subprocess, sys, time, urllib.request
 
+
+def _newest_jdk(major):
+    """Newest installed Temurin of this major. A literal path breaks on every JDK update (2026-09-24)."""
+    import glob as _g
+    import re as _r
+    found = _g.glob(r"C:\Program Files\Eclipse Adoptium\jdk-%s.*-hotspot" % major)
+    if not found:
+        raise SystemExit("no JDK %s installed under Eclipse Adoptium" % major)
+    return max(found, key=lambda p: [int(x) for x in _r.findall(r"[0-9]+", p.rsplit("jdk-", 1)[1])])
+
+
 VER, NEO, JAR = sys.argv[1], sys.argv[2], sys.argv[3]
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DIR = os.path.join(ROOT, f'neoforge-{VER}')
-JAVA17 = r'C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe'
-JAVA21 = r'C:\Program Files\Eclipse Adoptium\jdk-21.0.9.10-hotspot\bin\java.exe'
+JAVA17 = _newest_jdk('17') + r'\bin\java.exe'
+JAVA21 = _newest_jdk('21') + r'\bin\java.exe'
 
-JAVA25 = r'C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin\java.exe'
+JAVA25 = _newest_jdk('25') + r'\bin\java.exe'
 
 def pick_java(mc):
     parts = mc.split('.')

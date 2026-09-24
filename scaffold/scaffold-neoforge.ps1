@@ -83,7 +83,6 @@ rootProject.name = 'tk4j-neoforge-$Family'
 @"
 org.gradle.jvmargs=-Xmx3G
 org.gradle.daemon=false
-org.gradle.java.home=C:/Program Files/Eclipse Adoptium/jdk-21.0.9.10-hotspot
 "@ | Out-File "$p\gradle.properties" -Encoding ascii
 
 @"
