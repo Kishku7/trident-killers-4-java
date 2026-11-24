@@ -23,6 +23,8 @@ $m26 = [ordered]@{
   "26.1" = @{ mc="26.1.2";          api="0.145.3+26.1.1"; loader="0.18.6"; lo="26.1-";        hi="26.2";          pf="84" }
   "26.2" = @{ mc="26.2";            api="0.152.1+26.2";   loader="0.19.3"; lo="26.2-";        hi="26.3";          pf="88" }
   "26.3" = @{ mc="26.3";            api="0.161.0+26.3";   loader="0.19.5"; lo="26.3-";        hi="26.4";          pf="97" }
+  # 26.4 is still in pre-release: exclusive single-build window (pack_format 104 read from 26.4-pre-1's own version.json).
+  "26.4" = @{ mc="26.4-pre-1";      api="0.167.1+26.4";   loader="0.19.5"; lo="26.4-pre.1"; hi="26.4-pre.2"; pf="104" }
 }
 # Auto-discover pre-26 cells from the dirs (everything under Fabric/ except the 26 matrix cell).
 $preCells = @(Get-ChildItem $root -Directory -EA SilentlyContinue | Where-Object { $_.Name -ne "26" } | Select-Object -ExpandProperty Name | Sort-Object)
