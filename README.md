@@ -18,7 +18,7 @@ die with full player credit. Adds no blocks, items, or commands.
 
 ## Links
 
-- **Source:** the [Kishku7/trident-killers-4-java](https://github.com/Kishku7/trident-killers-4-java) (build guide: `BUILDING.md`) branch
+- **Source:** [Kishku7/trident-killers-4-java](https://github.com/Kishku7/trident-killers-4-java) (build guide: `BUILDING.md`)
 - **Issues:** https://github.com/Kishku7/mod_support/issues
 
 By Kishku7. All Rights Reserved.
